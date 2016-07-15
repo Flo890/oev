@@ -1,3 +1,7 @@
+package oev;
+
+import oev.mvc.Model;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;

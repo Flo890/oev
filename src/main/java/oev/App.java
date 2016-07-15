@@ -1,7 +1,10 @@
+package oev;
 
-public class Main {
+import oev.mvc.Controller;
+
+public class App {
 	
-	public Main(){
+	public App(){
 		
 	}
 

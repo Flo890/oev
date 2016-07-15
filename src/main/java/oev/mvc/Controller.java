@@ -1,3 +1,5 @@
+package oev.mvc;
+
 import java.awt.Desktop;
 import java.awt.event.*; 
 import java.io.IOException;
@@ -81,9 +83,9 @@ public class Controller implements ActionListener {
 		
 		
 		//Modus setzen
-		if(cmd.equals("Mode")||cmd.equals("Head")||cmd.equals("Vid")||cmd.equals("VidSpecial2Quad")||cmd.equals("Tunnel")){
+		if(cmd.equals("Mode")||cmd.equals("oev.Head")||cmd.equals("Vid")||cmd.equals("VidSpecial2Quad")||cmd.equals("Tunnel")){
 			ButtonModel jrb = view.modeGroup.getSelection();
-			if(jrb.getActionCommand().equals("Head")){
+			if(jrb.getActionCommand().equals("oev.Head")){
 				model.setMode(1);
 			}
 			if(jrb.getActionCommand().equals("Vid")){

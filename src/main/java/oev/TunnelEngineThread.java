@@ -1,3 +1,7 @@
+package oev;
+
+import oev.mvc.Model;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +63,7 @@ public class TunnelEngineThread extends Thread{
 			test2++;
 			try{
 				engine = new Engine(ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex)+".png")));
-				System.out.println("T"+threadNr+" loading "+fileIndex+".png for creating new Engine");
+				System.out.println("T"+threadNr+" loading "+fileIndex+".png for creating new oev.Engine");
 			}
 			catch(IOException e){
 				System.out.println("Thread "+threadNr+" at Addition "+test2+" trying to open "+fileIndex+".png :");
@@ -93,7 +97,7 @@ public class TunnelEngineThread extends Thread{
 				break;
 			}
 		}
-		System.out.println("Äußere Schleife (anzahlAdditionen) "+test2+" mal durchlaufen");
+		System.out.println("ï¿½uï¿½ere Schleife (anzahlAdditionen) "+test2+" mal durchlaufen");
 	}
 	
 	

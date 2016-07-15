@@ -1,3 +1,5 @@
+package oev.mvc;
+
 import java.util.Observer;
 
 import java.util.Observable;
@@ -23,7 +25,7 @@ public class View extends JFrame implements Observer{
 	
 	public View(Controller c){
 		controller = c;
-		setTitle("OEV 1.3.1");
+		setTitle("OEV 1.3.1");//TODO read version from gradle file / gradle.properties
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
     	JMenuBar menuLeiste = new JMenuBar();
@@ -98,9 +100,9 @@ public class View extends JFrame implements Observer{
     			//Mode selection
     			JLabel modeTitle = new JLabel("Select mode:");
     			
-    			JRadioButton mode1 = new JRadioButton("sum Image");//Head
+    			JRadioButton mode1 = new JRadioButton("sum Image");//oev.Head
     				mode1.addActionListener(controller);
-    				mode1.setActionCommand("Head");
+    				mode1.setActionCommand("oev.Head");
     			JRadioButton mode2 = new JRadioButton("Video");//Vid
     				mode2.addActionListener(controller);
     				mode2.setActionCommand("Vid");    			

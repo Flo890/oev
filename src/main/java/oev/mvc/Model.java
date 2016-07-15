@@ -1,18 +1,17 @@
+package oev.mvc;
+
+import oev.Head;
+import oev.ioservices.TunnelIOM;
+import oev.ioservices.VideoIOM;
+import oev.ioservices.VideoSpecial2QuadIOM;
+
 import java.io.*;
-import java.nio.file.FileStore;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.nio.file.WatchService;
-import java.nio.file.attribute.UserPrincipalLookupService;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.Observable;
-import java.util.Set;
+
 
 import javax.swing.JOptionPane;
 
-public class Model extends Observable{
+public class Model extends Observable {
 
 	String srcPath;
 	String resPath;
@@ -21,7 +20,7 @@ public class Model extends Observable{
 	int anzahlFrames;
 	int startFrame;
 	int nachziehendeFrames;
-	//Für Fortschrittsanzeige
+	//Fï¿½r Fortschrittsanzeige
 	String lastAction1;
 	String lastAction2;
 	String lastAction3;
@@ -54,7 +53,7 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Setzt srcPath im Model und entfernt dabei evtl den Dateinamen
+	 * Setzt srcPath im oev.mvc.Model und entfernt dabei evtl den Dateinamen
 	 * @param s
 	 */
 	public void setSrcPath(String s){
@@ -76,7 +75,7 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Setzt resPath im Model und entfernt dabei evtl den Dateinamen
+	 * Setzt resPath im oev.mvc.Model und entfernt dabei evtl den Dateinamen
 	 * @param s
 	 */
 	public void setResPath(String s){
@@ -140,7 +139,7 @@ public class Model extends Observable{
 	}
 	
 	/**
-	 * Zeigt eine neue Zeile in der Fortschrittsanzeige an und lässt die vorherigen eine Zeile runter rutschen
+	 * Zeigt eine neue Zeile in der Fortschrittsanzeige an und lï¿½sst die vorherigen eine Zeile runter rutschen
 	 * @param ls
 	 */
 	public void setNewAction(String ls){
@@ -165,11 +164,11 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Gibt die Anzahl der zu berechnenden Frames aus, damit der Ladebalken weiß "wie lang er sein muss"
+	 * Gibt die Anzahl der zu berechnenden Frames aus, damit der Ladebalken weiï¿½ "wie lang er sein muss"
 	 * @return
 	 */
 	public int getMaxOperations(){
-		//Für ProgressBar
+		//Fï¿½r ProgressBar
 		switch(mode){
 		case 5:
 			try{
@@ -198,9 +197,9 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Erhöht Position des Ladebalken um 1
+	 * Erhï¿½ht Position des Ladebalken um 1
 	 */
-	public void iterateOperation(){  //Nach jeder Addition aufrufen um zähler zu erhöhen
+	public void iterateOperation(){  //Nach jeder Addition aufrufen um zï¿½hler zu erhï¿½hen
 		operation++;
 		setChanged();
 		notifyObservers();
@@ -208,7 +207,7 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Gibt die Position des Ladebalken zurück
+	 * Gibt die Position des Ladebalken zurï¿½ck
 	 * @return
 	 */
 	public int getOperation(){
@@ -218,7 +217,7 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Liest die Eingaben aus nachdem Start gedrückt wurde und startet den richtigen Prozess
+	 * Liest die Eingaben aus nachdem Start gedrï¿½ckt wurde und startet den richtigen Prozess
 	 */
 	public void run(){
 		writeLog();
@@ -272,7 +271,7 @@ public class Model extends Observable{
 			
 			
 				vidSpec2QuadIom.main(input4);
-				System.out.println("Model: run(): vidSpec2QuadIom.main(input)");
+				System.out.println("oev.mvc.Model: run(): vidSpec2QuadIom.main(input)");
 			
 			vidSpec2QuadIom.setModel(this);
 			vidSpec2QuadIom.execute();
@@ -291,7 +290,7 @@ public class Model extends Observable{
 			
 			
 				tunneliom.main(input5);
-				System.out.println("Model: run(): tunneliom(input5)");
+				System.out.println("oev.mvc.Model: run(): tunneliom(input5)");
 			
 			tunneliom.setModel(this);
 			tunneliom.execute();
@@ -303,7 +302,7 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Überprüft ob genug Dateien im input Ordner vorhanden sind
+	 * ï¿½berprï¿½ft ob genug Dateien im input Ordner vorhanden sind
 	 * und ob der output Ordner existiert
 	 */
 	private void checkPaths() {
@@ -315,7 +314,7 @@ public class Model extends Observable{
 		}*/
 		
 		
-		//input Dateien prüfen
+		//input Dateien prï¿½fen
 		int i = startFrame-1;
 		while(i<totalFrameAnzahl){
 			i++;
@@ -328,7 +327,7 @@ public class Model extends Observable{
 		}
 		
 		
-		//Output folder prüfen		
+		//Output folder prï¿½fen		
 		try {
 			File f = new File(resPath+"/resultIMG1.png");
 			f.createNewFile();
@@ -373,27 +372,27 @@ public class Model extends Observable{
 	
 	
 	/**
-	 * Oeffnet gewählten inputOrdner im Explorer
+	 * Oeffnet gewï¿½hlten inputOrdner im Explorer
 	 */
 	public void showSrcPath(){
 		try{
 		Runtime.getRuntime().exec("explorer.exe "+srcPath);
 		}
 		catch(IOException e){
-			JOptionPane.showMessageDialog(null, "Source Destination not found: "+srcPath, "Model: showSrcPath()",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Source Destination not found: "+srcPath, "oev.mvc.Model: showSrcPath()",JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
 	
 	/**
-	 * Öffnet gewählten Output Ordner im Explorer
+	 * ï¿½ffnet gewï¿½hlten Output Ordner im Explorer
 	 */
 	public void showResPath(){
 		try{
 			Runtime.getRuntime().exec("explorer.exe "+resPath);
 			}
 			catch(IOException e){
-				JOptionPane.showMessageDialog(null, "Result Destination not found: "+resPath, "Model: showResPath()",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Result Destination not found: "+resPath, "oev.mvc.Model: showResPath()",JOptionPane.INFORMATION_MESSAGE);
 			}
 	}
 	
@@ -428,7 +427,7 @@ public class Model extends Observable{
 
 	
 	/**
-	 * Gibt den Modus auf den das Model zur Zeit gesetzt ist zurueck
+	 * Gibt den Modus auf den das oev.mvc.Model zur Zeit gesetzt ist zurueck
 	 * @return gewaehlter Modus
 	 */
 	public int getMode() {		

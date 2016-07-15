@@ -1,9 +1,13 @@
+package oev;
+
+import oev.ioservices.IOMachine;
+import oev.mvc.Model;
 
 import javax.swing.SwingWorker;
 
 
 public class Head extends SwingWorker{
-//public class Head{
+//public class oev.Head{
 
     static IOMachine iomachine;
     static String srcPath;
@@ -22,7 +26,7 @@ public class Head extends SwingWorker{
     	//Dritter: StartFrame
 
         iomachine = new IOMachine(Integer.parseInt(args[0]),Integer.parseInt(args[1]) ,Integer.parseInt(args[2]),1,srcPath,resPath,model);
-        //iomachine.load2();
+        //iomachine.loadAndProcessAllFrames();
     }
     
     public void setPaths(String s, String r){
@@ -38,7 +42,7 @@ public class Head extends SwingWorker{
 	
     @Override
 	protected Object doInBackground() throws Exception {
-		iomachine.load2();
+		iomachine.loadAndProcessAllFrames();
 		return null;
 	}
 	

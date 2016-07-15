@@ -1,4 +1,7 @@
-import java.io.IOException;
+package oev.ioservices;
+
+import oev.TunnelEngineThread;
+import oev.mvc.Model;
 
 import javax.swing.SwingWorker;
 
@@ -12,7 +15,7 @@ public class TunnelIOM extends SwingWorker{
 	String resPath;
 	Model model;
 	
-	//Für Multithreading:
+	//Fï¿½r Multithreading:
 	int totalAnzahl;
 	int rest;
 	int rest2;
@@ -44,7 +47,7 @@ public class TunnelIOM extends SwingWorker{
         	System.out.println("Insg. zu erzeugende Frames: "+totalAnzahl);
        
         rest2=totalAnzahl%4;               //Aufteilung auf die 4 Threads
-        	System.out.println("rest2: "+rest2+" zu erzeugende Frames werden dem 4. Thread zusätzlich zugeordnet");
+        	System.out.println("rest2: "+rest2+" zu erzeugende Frames werden dem 4. Thread zusï¿½tzlich zugeordnet");
         threadLaenge=(totalAnzahl-rest2)/4;    //Anzahl zu berechnender Frames pro Thread
         	System.out.println("Jeder Thread erzeugt "+threadLaenge+" Frames");
         inputThreadLaenge=threadLaenge*addLaenge;  //Anzahl der Frames die jeder Thread zum verarbeiten bekommt

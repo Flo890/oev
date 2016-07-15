@@ -1,3 +1,8 @@
+package oev.ioservices;
+
+import oev.EngineThread;
+import oev.mvc.Model;
+
 import java.awt.image.BufferedImage;
 import javax.swing.SwingWorker;
 

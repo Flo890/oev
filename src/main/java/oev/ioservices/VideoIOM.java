@@ -1,3 +1,8 @@
+package oev.ioservices;
+
+import oev.Engine;
+import oev.mvc.Model;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
@@ -51,14 +56,14 @@ public class VideoIOM extends SwingWorker{
         
         
         System.out.println("Loading first file "+startFrame+".png");
-        model.setNewAction("VideoIOM: loading "+startFrame+".png");
+        model.setNewAction("oev.ioservices.VideoIOM: loading "+startFrame+".png");
         save();
         fileIndex = startFrame+1;
 
         for(int i = 0; i<(anzahlBilder-1); i++){
         	
         	switch(fktNr){
-        	//Default für normale Verrechnungs fkt, case 4 für die Durchschnittsmethode
+        	//Default fï¿½r normale Verrechnungs fkt, case 4 fï¿½r die Durchschnittsmethode
         	case 4:
         		
         		try {
@@ -69,7 +74,7 @@ public class VideoIOM extends SwingWorker{
 				}
         		
         		System.out.println("Loading file "+(fileIndex)+".png");
-                model.setNewAction("VideoIOM: Loading file "+Integer.toString(fileIndex)+".png");
+                model.setNewAction("oev.ioservices.VideoIOM: Loading file "+Integer.toString(fileIndex)+".png");
                 save();
                 fileIndex++;
                 break;
@@ -83,7 +88,7 @@ public class VideoIOM extends SwingWorker{
 				}
             	
             	System.out.println("Loading file "+(fileIndex)+".png");
-            	model.setNewAction("VideoIOM: Loading file "+Integer.toString(fileIndex)+".png");
+            	model.setNewAction("oev.ioservices.VideoIOM: Loading file "+Integer.toString(fileIndex)+".png");
             	save();
             	fileIndex++;
             	break;
@@ -105,7 +110,7 @@ public class VideoIOM extends SwingWorker{
 		}
         
         System.out.println("File "+(fileIndex-startFrame+1)+" saved");
-        model.setNewAction("VideoIOM: Saving file "+(fileIndex-startFrame+1)+".png");
+        model.setNewAction("oev.ioservices.VideoIOM: Saving file "+(fileIndex-startFrame+1)+".png");
         model.iterateOperation();
 
     }
@@ -122,7 +127,7 @@ public class VideoIOM extends SwingWorker{
     }
 
     /**
-     * Muss statt load2() aufgerufen werden damit die Berechnung im Hintergrund läuft und GUI nicht einfriert
+     * Muss statt loadAndProcessAllFrames() aufgerufen werden damit die Berechnung im Hintergrund lï¿½uft und GUI nicht einfriert
      */
 	@Override
 	protected Object doInBackground() throws Exception {

@@ -1,3 +1,8 @@
+package oev.ioservices;
+
+import oev.Engine;
+import oev.mvc.Model;
+
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
@@ -7,15 +12,14 @@ import java.io.*;
 
 public class IOMachine{
 
-    BufferedImage[] array;
-    Engine engine;
-    int engineNr;
-    int fkt;
-    int startFrame;
-    BufferedImage outputFile;
-    int amount;
-    String srcPath, resPath;
-    Model model;
+    private BufferedImage[] array;
+    private Engine engine;
+    private int engineNr;
+    private int fkt;
+    private int startFrame;
+    private int amount;
+    private String srcPath, resPath;
+    private Model model;
 
     public IOMachine(int am, int f, int sf, int e, String s, String r, Model m){
         array = new BufferedImage[am];
@@ -30,14 +34,14 @@ public class IOMachine{
 
     
     /**
-     * L�dt der Reihe nach alle Dateien, verrechnet sie jeweils und speichert das resultImg
+     * Lädt der Reihe nach alle Dateien, verrechnet sie jeweils und speichert das resultImg
      */
-    public void load2(){
+    public void loadAndProcessAllFrames(){
         //Benötigt deutlich weniger Arbeitsspeicher als load()
         BufferedImage actualFrame;
 
         
-        	System.out.println("IOMachine: Try loading file "+srcPath+"\\"+startFrame+".png");
+        	System.out.println("oev.ioservices.IOMachine: Try loading file "+srcPath+"\\"+startFrame+".png");
         	model.setNewAction("IOM: Loading file "+startFrame+".png");
         	
         	try{
@@ -47,13 +51,13 @@ public class IOMachine{
         	}
         	
             model.iterateOperation();
-          
 
-           
 
+
+        BufferedImage outputFile = null;
         int filenr=startFrame+1;
         for(int i=0; i<(amount-1); i++){
-        	System.out.println("IOMachine: Try loading file "+srcPath+"\\"+filenr+".png");
+        	System.out.println("oev.ioservices.IOMachine: Try loading file "+srcPath+"\\"+filenr+".png");
         	model.setNewAction("IOM: Loading file "+filenr+".png");
         		
         		actualFrame = null;
@@ -65,6 +69,7 @@ public class IOMachine{
             
             model.iterateOperation();
             filenr++;
+
 
             switch(fkt){
                 
@@ -79,13 +84,13 @@ public class IOMachine{
             }
         }        
 
-        save();
+        save(outputFile);
     }
 
     /**
      * outputFile speichern
      */
-    public void save(){
+    private void save(BufferedImage outputFile){
         File saveFile = new File(resPath+"\\resultIMG.png");
 
         try{
