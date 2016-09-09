@@ -1,4 +1,4 @@
-package oev;
+package oev.ioservices.threads;
 
 import oev.mvc.Model;
 
@@ -53,24 +53,12 @@ public class EngineThread extends Thread{
         for(int i = start; i<(end+1); i++){
 
             engine = new Engine(ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex)+".png")));
-            //model.setNewAction("Thread "+threadNr+": Loading file"+Integer.toString(fileIndex)+".png");
 
-            fileIndex2=fileIndex+1;;
-            
-            
-            switch(fktNr){
-            case 4:
-            	for(int j = 0; j<addLaenge; j++){
-            		resultImage=engine.averageValue(ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
-                    fileIndex2++;
-            	}
-            	break;
-            default:
-            	for(int j = 0; j<addLaenge; j++){
-            		resultImage=engine.maxValue2(fktNr,ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
-            		fileIndex2++;
-            	}
-            	break;
+            fileIndex2=fileIndex;//TODO hier war +1 ; hatte die einen sinn?
+
+            for(int j = 0; j<addLaenge; j++){
+            	resultImage=engine.findNewColorForEachPixel(fktNr,ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
+            	fileIndex2++;
             }
 
             save();
@@ -85,7 +73,7 @@ public class EngineThread extends Thread{
         ImageIO.write(resultImage, "png", saveFile);
         System.out.println(threadNr+": File "+fileIndex+" saved");
         model.setNewAction("Thread "+threadNr+": Saved img resultIMG"+fileIndex+".png");
-        model.iterateOperation();
+        model.increaseProgress();
     }
     
     public void setModel(Model m){

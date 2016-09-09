@@ -25,7 +25,7 @@ public class View extends JFrame implements Observer{
 	
 	public View(Controller c){
 		controller = c;
-		setTitle("OEV 1.3.1");//TODO read version from gradle file / gradle.properties
+		setTitle("OEV 1.3.2");//TODO read version from gradle file / gradle.properties
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
     	JMenuBar menuLeiste = new JMenuBar();
@@ -100,9 +100,9 @@ public class View extends JFrame implements Observer{
     			//Mode selection
     			JLabel modeTitle = new JLabel("Select mode:");
     			
-    			JRadioButton mode1 = new JRadioButton("sum Image");//oev.Head
+    			JRadioButton mode1 = new JRadioButton("sum Image");//oev.ioservices.SumImageProcessingService
     				mode1.addActionListener(controller);
-    				mode1.setActionCommand("oev.Head");
+    				mode1.setActionCommand("oev.ioservices.SumImageProcessingService");
     			JRadioButton mode2 = new JRadioButton("Video");//Vid
     				mode2.addActionListener(controller);
     				mode2.setActionCommand("Vid");    			
@@ -258,7 +258,7 @@ public class View extends JFrame implements Observer{
 		lastAction2.setText(m.getLastAction2());
 		lastAction3.setText(m.getLastAction3());
 		progressBar.setMaximum(m.getMaxOperations());
-		progressBar.setValue(m.getOperation());
+		progressBar.setValue(m.getProgress());
 	}
 	
 	public String getAmountFrames(){

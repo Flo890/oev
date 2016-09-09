@@ -1,4 +1,4 @@
-package oev;
+package oev.ioservices.threads;
 
 import oev.mvc.Model;
 
@@ -63,41 +63,24 @@ public class TunnelEngineThread extends Thread{
 			test2++;
 			try{
 				engine = new Engine(ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex)+".png")));
-				System.out.println("T"+threadNr+" loading "+fileIndex+".png for creating new oev.Engine");
+				System.out.println("T"+threadNr+" loading "+fileIndex+".png for creating new oev.ioservices.threads.Engine");
 			}
 			catch(IOException e){
 				System.out.println("Thread "+threadNr+" at Addition "+test2+" trying to open "+fileIndex+".png :");
 			}
 			
 			fileIndex2=fileIndex+1;
-			
-			switch(fktNr){
-			case 4:
-				for(int j=0; j<addLaenge-1; j++){			
-				
-					resultImage=engine.averageValue(ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
-					fileIndex2++;				
-				}
-				save();
-				fileIndex=fileIndex+addLaenge;
-				break;
-			
-			default:
-				int test = 0;
-				for(int j=0; j<addLaenge-1; j++){			
-					
-					resultImage=engine.maxValue2(fktNr, ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
-					System.out.println("T"+threadNr+" loading "+fileIndex2+".png");
-					fileIndex2++;
-					test++;
-				}
-				System.out.println("Innere Schleife (addLaenge) "+test+" mal durchlaufen");
-				save();
-				fileIndex=fileIndex+addLaenge;
-				break;
+
+			for(int j=0; j<addLaenge-1; j++){
+				resultImage=engine.findNewColorForEachPixel(fktNr, ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
+				System.out.println("T"+threadNr+" loading "+fileIndex2+".png");
+				fileIndex2++;
+
 			}
+			save();
+			fileIndex=fileIndex+addLaenge;
 		}
-		System.out.println("�u�ere Schleife (anzahlAdditionen) "+test2+" mal durchlaufen");
+		System.out.println("auessere Schleife (anzahlAdditionen) "+test2+" mal durchlaufen");
 	}
 	
 	
@@ -112,7 +95,7 @@ public class TunnelEngineThread extends Thread{
         ImageIO.write(resultImage, "png", saveFile);
         System.out.println(threadNr+": File "+((fileIndex-1)/addLaenge)+" saved");
         model.setNewAction("Thread "+threadNr+": Saved img resultIMG"+fileIndex+".png");
-        model.iterateOperation();
+        model.increaseProgress();
 	}
 	
 	

@@ -14,40 +14,47 @@ import javax.swing.JOptionPane;
 
 public class Controller implements ActionListener {
 	
-	View view;
-	Model model;
-	
-	
+	private final View view;
+	private final Model model;
 	
 	public Controller(){
 		view = new View(this);
 		model = new Model();
 		model.addObserver(view);
 		view.setVisible(true);
-		
 	}
-
-	
 	
 	
 	public void actionPerformed(ActionEvent e){
 		
-		String cmd = e.getActionCommand();
+		String actionCommand = e.getActionCommand();
 		
-		//src path setzen wenn �ber FileChooser gewaehlt
-		if(cmd.equals("selectSrc")){
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileSelectionMode( JFileChooser.FILES_AND_DIRECTORIES);
-			fileChooser.showOpenDialog(null);
-			model.setSrcPath(fileChooser.getSelectedFile().getAbsolutePath());
+		//set source path if there was chosen one in the file chooser or entered directly in the textfield
+		if(actionCommand.equals("selectSrc") || actionCommand.equals("srcTextFeld")){
+			String path = null;
+			if(actionCommand.equals("selectSrc")) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				fileChooser.showOpenDialog(null);
+				path = fileChooser.getSelectedFile().getAbsolutePath();
+			} else {
+				path = view.getSrcPath();
+			}
+			model.setSrcPath(path);
 			return;
 		}
-		
-		//result path setzen wenn �ber FileChooser gewaehlt
-		if(cmd.equals("selectRes")){
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileSelectionMode( JFileChooser.FILES_AND_DIRECTORIES);
-			fileChooser.showOpenDialog(null);			
+
+		//set result path if there was chosen one in the file chooser or entered directly in the textfield
+		if(actionCommand.equals("selectRes") || actionCommand.equals("resTextFeld")){
+			String path = null;
+			if(actionCommand.equals("selectRes")){
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileSelectionMode( JFileChooser.FILES_AND_DIRECTORIES);
+				fileChooser.showOpenDialog(null);
+				path = fileChooser.getSelectedFile().getAbsolutePath();
+			} else {
+				path = view.getResPath();
+			}
 			
 			//Overwrite warning					
 			int eingabe = JOptionPane.showConfirmDialog(null, "Existing *.png files and Log.txt can be overwritten when you continue!", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -56,36 +63,15 @@ public class Controller implements ActionListener {
 				model.setResPath("");
 				return;	
 			}
-			model.setResPath(fileChooser.getSelectedFile().getAbsolutePath());
-			
+			model.setResPath(path);
 		}
-			
+
+
 		
-		//SrcPath setzen wenn direkt in Textfeld gesetzt
-		if(cmd.equals("srcTextFeld")){
-			model.setSrcPath(view.getSrcPath());
-		}
-		
-		
-		//ResPath setzen wenn direkt in Textfeld gesetzt
-		if(cmd.equals("resTextFeld")){
-			
-			//Overwrite warning					
-			int eingabe = JOptionPane.showConfirmDialog(null, "Existing *.png files and Log.txt can be overwritten when you continue!", "Warning", JOptionPane.WARNING_MESSAGE);
-			if(eingabe==2){
-				model.setResPath("");
-				return;
-			}
-			
-			model.setResPath(view.getResPath());
-			
-		}
-		
-		
-		//Modus setzen
-		if(cmd.equals("Mode")||cmd.equals("oev.Head")||cmd.equals("Vid")||cmd.equals("VidSpecial2Quad")||cmd.equals("Tunnel")){
+		//set mode
+		if(actionCommand.equals("Mode")||actionCommand.equals("oev.ioservices.SumImageProcessingService")||actionCommand.equals("Vid")||actionCommand.equals("VidSpecial2Quad")||actionCommand.equals("Tunnel")){
 			ButtonModel jrb = view.modeGroup.getSelection();
-			if(jrb.getActionCommand().equals("oev.Head")){
+			if(jrb.getActionCommand().equals("oev.ioservices.SumImageProcessingService")){
 				model.setMode(1);
 			}
 			if(jrb.getActionCommand().equals("Vid")){
@@ -104,83 +90,72 @@ public class Controller implements ActionListener {
 		}		
 		
 		
-		//starten		
-		if(cmd.equals("Start")){
-			
-			//Funktion auslesen
+		//start processing
+		if(actionCommand.equals("Start")){
+
 			if(view.fktBox.getSelectedIndex()==-1){
-				showFehlermeldung("function is not selected");				
+				showErrorMessage("function is not selected");
 			}else{
 				model.setFkt(view.fktBox.getSelectedIndex()+1);
 			}
-			
-			
-			
-			//amount of frames auslesen
+
 			try{
-				model.setAnzahlFrames(Integer.parseInt(view.getAmountFrames()));
+				model.setAmountFrames(Integer.parseInt(view.getAmountFrames()));
 			}
 			catch(Exception f){
-				showFehlermeldung("amount of frames is not set");				
+				showErrorMessage("amount of frames is not set");
 			}
-			
-			
-			
-			//amount nachziehende Frames auslesen
+
 			try{
-				model.setNachziehendeFrames(Integer.parseInt(view.getNachziehendeFrames()));
+				model.setEffectLengthInFrames(Integer.parseInt(view.getNachziehendeFrames()));
 			}
 			catch(Exception g){
 				if(model.getMode()==4||model.getMode()==5){
-					showFehlermeldung("addition amount is not set");					
+					showErrorMessage("addition amount is not set");
 				}
 			}
-			
-			
-			//startFrame auslesen
+
 			try{
 				model.setStartFrame(Integer.parseInt(view.getStartFrame()));
 			}
 			catch(Exception h){
-				showFehlermeldung("startFrame is not set");				
+				showErrorMessage("startFrame is not set");
 			}
 			
+
 			
-			
-			//model.setSrcRes(view.getSrcPath(),view.getResPath());	
-			
-			//Ladebalken auf 0 setzen
-			model.setOperation(0);
-			//starten
+			//set progress bar to zero
+			model.setProgressState(0);
+			//start
 			model.run();
 		}
 		
 		
 		
 		//Anhalten
-		if(cmd.equals("Stop")){
-			model.setOperation(0);
+		if(actionCommand.equals("Stop")){
+			model.setProgressState(0);
 			model.stop();
 		}
 		
-		//Schlie�en
-		if(cmd.equals("Exit")){
+		//exit app
+		if(actionCommand.equals("Exit")){
 			System.exit(0);
 		}
 		
-		//SrcFolder im Explorer �ffnen
-		if(cmd.equals("ShowSrc")){
+		//open src folder
+		if(actionCommand.equals("ShowSrc")){
 			model.showSrcPath();
 		}
 		
-		//resultFolder im Explorer �ffnen
-		if(cmd.equals("ShowRes")){
+		//open result folder
+		if(actionCommand.equals("ShowRes")){
 			model.showResPath();
 		}
 		
 		//Info anzeigen
-		if(cmd.equals("Info")){
-			JLabel infoText = new JLabel("Version 1.3.1 from 16.05.2016    -   http://www.tf-fotovideo.de/oev/    -  by Florian Bemmann");
+		if(actionCommand.equals("Info")){
+			JLabel infoText = new JLabel("Version 1.3.2 from 10.09.2016    -   http://www.tf-fotovideo.de/oev/    -  by Florian Bemmann");
 			infoText.addMouseListener(new MouseListener() {
 				
 				@Override
@@ -198,7 +173,7 @@ public class Controller implements ActionListener {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					try {
-						Desktop.getDesktop().browse(new URI("www.cip.ifi.lmu.de/~bemmannf"));
+						Desktop.getDesktop().browse(new URI("http://www.tf-fotovideo.de/oev/"));
 					} catch (IOException | URISyntaxException e1) {						
 						e1.printStackTrace();
 					}					
@@ -209,12 +184,7 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	
-	/**
-	 * Gibt Fehlermeldung an Nutzer aus
-	 * @param string anzuzeigender Text
-	 */
-	private void showFehlermeldung(String string) {
+	private void showErrorMessage(String string) {
 		JOptionPane.showMessageDialog(null, string, "wrong input", JOptionPane.WARNING_MESSAGE);
 		return;
 	}

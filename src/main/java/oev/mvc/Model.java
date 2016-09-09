@@ -1,9 +1,6 @@
 package oev.mvc;
 
-import oev.Head;
-import oev.ioservices.TunnelIOM;
-import oev.ioservices.VideoIOM;
-import oev.ioservices.VideoSpecial2QuadIOM;
+import oev.ioservices.*;
 
 import java.io.*;
 import java.util.Observable;
@@ -13,52 +10,49 @@ import javax.swing.JOptionPane;
 
 public class Model extends Observable {
 
-	String srcPath;
-	String resPath;
-	int mode;
-	int fkt;
-	int anzahlFrames;
-	int startFrame;
-	int nachziehendeFrames;
-	//F�r Fortschrittsanzeige
-	String lastAction1;
-	String lastAction2;
-	String lastAction3;
-	int operation;
+	//processing properties:
+	private String srcPath;
+	private String resPath;
+	private int mode;
+	private int fkt;
+	private int amountFrames;
+	private int startFrame;
+	private int effectLengthInFrames;//the amount of frames used in the mode Special Video (=> higher amount of frames means longer light-trails)
+
+	//to display progress / last action:
+	private String lastAction1;
+	private String lastAction2;
+	private String lastAction3;
+	private int operation;
 	
-	Head head;
-	VideoIOM videoIom;
-	VideoSpecial2QuadIOM vidSpec2QuadIom;
-	TunnelIOM tunneliom;
+//	private SumImageProcessingService head;
+//	private VideoProcessingService videoIom;
+//	private VideoSpecialProcessingServiceMultithreaded vidSpec2QuadIom;
+//	private TunnelFrameProcessingService tunneliom;
+	private FrameProcessingService frameProcessingService;
 	
 	
 	
 	
 	public Model(){
 		
-		//Default Werte der Eingabefelder setzen
+		//set default values for input fields
 		srcPath=System.getProperty("user.home");
 		resPath=System.getProperty("user.home");
-		//srcPath = "C:\\Users\\Florian\\SkyDrive\\ImageEditor\\Projekt3\\ImageEditorGUI\\src\\source";
-		//resPath = "C:\\Users\\Florian\\SkyDrive\\ImageEditor\\Projekt3\\ImageEditorGUI\\src\\result";		
 		fkt=1;
-		anzahlFrames=nachziehendeFrames=0;
+		amountFrames = effectLengthInFrames =0;
 		startFrame=1;
 		lastAction1="Waiting for start...";
-		lastAction2="LA2";
-		lastAction3="LA3";
+		lastAction2="-";
+		lastAction3="-";
 		operation=0;
 		
 	}
 	
-	
-	/**
-	 * Setzt srcPath im oev.mvc.Model und entfernt dabei evtl den Dateinamen
-	 * @param s
-	 */
+
 	public void setSrcPath(String s){
 		
-		//Evtl. Dateiname aus Path entfernen
+		//if the chosen path is a file, remove the filename. We need a directory path
 		if(!new File(s).isDirectory()){
 			s = s.substring(0,s.lastIndexOf("\\"));			
 		}		
@@ -72,15 +66,11 @@ public class Model extends Observable {
 	public String getSrcPath(){
 		return srcPath;
 	}
-	
-	
-	/**
-	 * Setzt resPath im oev.mvc.Model und entfernt dabei evtl den Dateinamen
-	 * @param s
-	 */
+
+
 	public void setResPath(String s){
-		
-		//Evtl. Dateiname aus Path entfernen
+
+		//if the chosen path is a file, remove the filename. We need a directory path
 		if(!new File(s).isDirectory()){
 			s = s.substring(0,s.lastIndexOf("\\"));			
 		}
@@ -109,9 +99,9 @@ public class Model extends Observable {
 		notifyObservers();
 	}
 	
-	public void setAnzahlFrames(int a){
-		anzahlFrames=a;
-		System.out.println("Neue Anzahl Frames: "+anzahlFrames);		
+	public void setAmountFrames(int a){
+		amountFrames =a;
+		System.out.println("Neue Anzahl Frames: "+ amountFrames);
 		setChanged();
 		notifyObservers();
 	}
@@ -123,23 +113,15 @@ public class Model extends Observable {
 		notifyObservers();
 	}
 	
-	public void setNachziehendeFrames(int a){
-		nachziehendeFrames=a;
-		System.out.println("Neue Anzahl nachziehender Frames: "+nachziehendeFrames);
+	public void setEffectLengthInFrames(int a){
+		effectLengthInFrames =a;
+		System.out.println("Neue Anzahl nachziehender Frames: "+ effectLengthInFrames);
 		setChanged();
 		notifyObservers();
 	}
-	
-	public void setSrcRes(String s, String r){
-		srcPath=s;
-		resPath=r;
-		System.out.println("Paths changed: Src: "+srcPath+" , Res: "+resPath);
-		setChanged();
-		notifyObservers();
-	}
-	
+
 	/**
-	 * Zeigt eine neue Zeile in der Fortschrittsanzeige an und l�sst die vorherigen eine Zeile runter rutschen
+	 * shows a new action near the progress bar and lets the older actions float down one line
 	 * @param ls
 	 */
 	public void setNewAction(String ls){
@@ -164,32 +146,31 @@ public class Model extends Observable {
 	
 	
 	/**
-	 * Gibt die Anzahl der zu berechnenden Frames aus, damit der Ladebalken wei� "wie lang er sein muss"
-	 * @return
+	 *
+	 * @return total amount of frames to process (needed to calculate progress percentage)
 	 */
 	public int getMaxOperations(){
-		//F�r ProgressBar
 		switch(mode){
 		case 5:
 			try{
-				return anzahlFrames/nachziehendeFrames;
+				return amountFrames / effectLengthInFrames;
 			}
 			catch(ArithmeticException e){
 				System.out.println("Division by zero in getMaxOperation()");
 				return 0;
 			}
 		default:
-			return anzahlFrames-nachziehendeFrames;
+			return amountFrames - effectLengthInFrames;
 			
 		}
 	}
 	
 	
 	/**
-	 * Setzt den Ladebalken auf eine neue Position
+	 * sets progress bar to new position
 	 * @param o
 	 */
-	public void setOperation(int o){
+	public void setProgressState(int o){
 		operation=o;
 		setChanged();
 		notifyObservers();
@@ -197,9 +178,9 @@ public class Model extends Observable {
 	
 	
 	/**
-	 * Erh�ht Position des Ladebalken um 1
+	 * increases the value of the progressbar by 1
 	 */
-	public void iterateOperation(){  //Nach jeder Addition aufrufen um z�hler zu erh�hen
+	public void increaseProgress(){
 		operation++;
 		setChanged();
 		notifyObservers();
@@ -207,200 +188,122 @@ public class Model extends Observable {
 	
 	
 	/**
-	 * Gibt die Position des Ladebalken zur�ck
-	 * @return
+	 *
+	 * @return postion of progress bar
 	 */
-	public int getOperation(){
+	public int getProgress(){
 		return operation;
 	}
 	
 	
 	
-	/**
-	 * Liest die Eingaben aus nachdem Start gedr�ckt wurde und startet den richtigen Prozess
-	 */
+
 	public void run(){
-		writeLog();
+		writeLogFile();
+		checkPaths();
 		switch(mode){
-		case 1:			
-			String[]input = new String[3];
-			input[0]=String.valueOf(anzahlFrames);
-			input[1]=String.valueOf(fkt);
-			input[2]=String.valueOf(startFrame);
-			checkPaths();
-			
-			head = new Head();
-			head.setPaths(srcPath, resPath);
-			head.setModel(this);
-			
-			head.main(input);			
-						
-			head.execute();			
-			break;
-		case 2:
-			checkPaths();
-			String[]input2 = new String[3];
-			input2[0]=String.valueOf(anzahlFrames);
-			input2[1]=String.valueOf(fkt);
-			input2[2]=String.valueOf(startFrame);
-			checkPaths();
-			
-			videoIom = new VideoIOM();
-			videoIom.setPaths(srcPath, resPath);
-			videoIom.setModel(this);	
-			
-			videoIom.main(input2);
-			
-			
-			videoIom.execute();
-			break;
-		case 3:
-			//Gibts nicht mehr
-			break;
-		
-		case 4:
-			String[]input4 = new String[4];
-			input4[0]=String.valueOf(anzahlFrames);
-			input4[1]=String.valueOf(fkt);
-			input4[2]=String.valueOf(nachziehendeFrames);
-			input4[3]=String.valueOf(startFrame);
-			checkPaths();
-			
-			vidSpec2QuadIom = new VideoSpecial2QuadIOM();
-			vidSpec2QuadIom.setPaths(srcPath, resPath);
-			
-			
-				vidSpec2QuadIom.main(input4);
-				System.out.println("oev.mvc.Model: run(): vidSpec2QuadIom.main(input)");
-			
-			vidSpec2QuadIom.setModel(this);
-			vidSpec2QuadIom.execute();
-			break;
-			
-		case 5:
-			String[]input5 = new String[4];
-			input5[0]=String.valueOf(anzahlFrames);
-			input5[1]=String.valueOf(fkt);
-			input5[2]=String.valueOf(nachziehendeFrames);
-			input5[3]=String.valueOf(startFrame);
-			checkPaths();
-			
-			tunneliom = new TunnelIOM();
-			tunneliom.setPaths(srcPath, resPath);
-			
-			
-				tunneliom.main(input5);
-				System.out.println("oev.mvc.Model: run(): tunneliom(input5)");
-			
-			tunneliom.setModel(this);
-			tunneliom.execute();
+			case 1:
+				frameProcessingService = new SumImageProcessingService();
+				break;
+			case 2:
+				frameProcessingService = new VideoProcessingService();
+				break;
+			case 4:
+				frameProcessingService = new VideoSpecialProcessingServiceMultithreaded();
+				break;
+			case 5:
+				frameProcessingService = new TunnelFrameProcessingService();
 		}
-		
-		
-			
+
+		frameProcessingService.setPaths(srcPath, resPath);
+		try {
+			frameProcessingService.setModel(this);
+		} catch(Exception e){
+			//some implementations need setting the model before the options; others the other way round TODO thats crap
+		}
+
+		frameProcessingService.setOptionsAndPrepareExecution(
+				amountFrames,
+				fkt,
+				startFrame,
+				effectLengthInFrames
+		);
+		frameProcessingService.setModel(this);
+		frameProcessingService.execute();
 	}
 	
 	
 	/**
-	 * �berpr�ft ob genug Dateien im input Ordner vorhanden sind
-	 * und ob der output Ordner existiert
+	 * checks if selected paths and files exist
 	 */
 	private void checkPaths() {
-		
-		//anzahl der vorhandenen input Dateien berechnen
-		int totalFrameAnzahl = anzahlFrames;
-		/*if(mode==4||mode==5){
-			totalFrameAnzahl = totalFrameAnzahl;
-		}*/
-		
-		
-		//input Dateien pr�fen
+
+		//check input files
+		int totalFrameAmount = amountFrames;
 		int i = startFrame-1;
-		while(i<totalFrameAnzahl){
+		while(i<totalFrameAmount){
 			i++;
 			File f = new File(srcPath+"/"+i+".png");
 			if(!f.exists()){
-				showFehlermeldung("input file missing: "+i+".png");
+				showErrorMessage("input file missing: "+i+".png");
 				return;				
 			}
 			
 		}
 		
 		
-		//Output folder pr�fen		
+		//check output folder
 		try {
 			File f = new File(resPath+"/resultIMG1.png");
 			f.createNewFile();
 			f.delete();
 		} catch (IOException e) {
-			showFehlermeldung("result folder does not exist or cannot be written to");
+			showErrorMessage("result folder does not exist or cannot be written to");
 			e.printStackTrace();
 			return;
 		}
 			
 			
 	}
-	
-	
-	
-	
-	/**
-	 * Gibt eine Fehlermeldung mit dem geg. Text an den Nutzer aus
-	 * @param string
-	 */
-	private void showFehlermeldung(String string) {
+
+	private void showErrorMessage(String string) {
 		JOptionPane.showMessageDialog(null, string, "wrong input", JOptionPane.WARNING_MESSAGE);
 		return;
 	}
 	
 
-	
-	/**
-	 * Bricht im Hintergrund laufende Berechnung ab
-	 */
+
 	public void stop(){
-		switch(mode){
-		case 1: head.cancel(true);
-				break;
-		case 2: videoIom.cancel(true);
-				break;
-		case 4: vidSpec2QuadIom.cancel(true);
-				break;
-		case 5: tunneliom.cancel(true);
-		}
+		frameProcessingService.cancel(true);
 	}
 	
 	
 	/**
-	 * Oeffnet gew�hlten inputOrdner im Explorer
+	 * opens selected input folder
 	 */
 	public void showSrcPath(){
 		try{
-		Runtime.getRuntime().exec("explorer.exe "+srcPath);
+			Runtime.getRuntime().exec("explorer.exe "+srcPath);
 		}
 		catch(IOException e){
 			JOptionPane.showMessageDialog(null, "Source Destination not found: "+srcPath, "oev.mvc.Model: showSrcPath()",JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	
-	
+
+
 	/**
-	 * �ffnet gew�hlten Output Ordner im Explorer
+	 * opens selected output folder
 	 */
 	public void showResPath(){
 		try{
 			Runtime.getRuntime().exec("explorer.exe "+resPath);
-			}
-			catch(IOException e){
-				JOptionPane.showMessageDialog(null, "Result Destination not found: "+resPath, "oev.mvc.Model: showResPath()",JOptionPane.INFORMATION_MESSAGE);
-			}
+		} catch(IOException e){
+			JOptionPane.showMessageDialog(null, "Result Destination not found: "+resPath, "oev.mvc.Model: showResPath()",JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
-	
-	/**
-	 * Schreibt das LogFile
-	 */
-	public void writeLog(){
+
+	public void writeLogFile(){
 		try{
 		File file = new File(resPath+"\\Log.txt");
 		PrintWriter log = new PrintWriter(file);
@@ -413,23 +316,17 @@ public class Model extends Observable {
 		log.println("source path: "+srcPath);
 		log.println("result path: "+resPath);
 		log.println("mode: "+mode);
-		log.println("funktion: "+fkt);
-		log.println("anzahl Frames: "+anzahlFrames);
+		log.println("function: "+fkt);
+		log.println("amount Frames: "+ amountFrames);
 		log.println("start Frame: "+startFrame);
-		log.println("nachziehende Frames: "+nachziehendeFrames);
+		log.println("effect length in frames: "+ effectLengthInFrames);
 		log.close();
-		}
-		catch(IOException e){
-			System.out.println("Method writeLog():");
+		} catch(IOException e){
+			System.out.println("writing logfile failed:");
 			e.printStackTrace();
 		}
 	}
 
-	
-	/**
-	 * Gibt den Modus auf den das oev.mvc.Model zur Zeit gesetzt ist zurueck
-	 * @return gewaehlter Modus
-	 */
 	public int getMode() {		
 		return mode;
 	}

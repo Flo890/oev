@@ -1,54 +1,51 @@
 package oev.ioservices;
 
-import oev.TunnelEngineThread;
+import oev.ioservices.threads.TunnelEngineThread;
 import oev.mvc.Model;
 
 import javax.swing.SwingWorker;
 
-public class TunnelIOM extends SwingWorker{
+public class TunnelFrameProcessingService extends SwingWorker implements FrameProcessingService{
 
-	int anzahl;
-	int fktNr;
-	int addLaenge;
-	int startFrame;
-	String srcPath;
-	String resPath;
-	Model model;
+	private int anzahl;
+	private int fktNr;
+	private int addLaenge;
+	private int startFrame;
+	private String srcPath;
+	private String resPath;
+	private Model model;
 	
-	//F�r Multithreading:
-	int totalAnzahl;
-	int rest;
-	int rest2;
-	int threadLaenge;
-	int inputThreadLaenge;
+	//for multithreading:
+	private int totalFrameAmount;
+	private int rest;
+	private int rest2;
+	private int threadLaenge;
+	private int inputThreadLaenge;
 	
-	TunnelEngineThread thread1, thread2, thread3, thread4;
+	private TunnelEngineThread thread1, thread2, thread3, thread4;
 	
 	public void setPaths(String sP, String rP) {
 				srcPath=sP;
 				resPath=rP;
 	}
 
-	public void main(String[] args){
-		// 1.Parameter: Anzahl Bilder
-        // 2.Parameter: Fkuntions Nummer
-        // 3.Parameter: Länge der Additionen
-    	// 4.Parameter: Nr StartFrame
-        anzahl=Integer.parseInt(args[0]);
-        fktNr=Integer.parseInt(args[1]);
-        addLaenge=Integer.parseInt(args[2]);
-        startFrame=Integer.parseInt(args[3]);
+	public void setOptionsAndPrepareExecution(Integer amountFrames, Integer aStartFrame, Integer function, Integer effectLengthInFrames){
 
-        	System.out.println("Anzahl input: "+anzahl+" , addLaenge: "+addLaenge);
+        anzahl=amountFrames;
+        fktNr=function;
+        addLaenge=effectLengthInFrames;
+        startFrame=aStartFrame;
+
+        	System.out.println("Anzahl input: "+amountFrames+" , effectLengthInFrames: "+addLaenge);
         	
-        rest=anzahl%addLaenge;        //Wird hier nicht weiterverarbeitet
-        totalAnzahl=(anzahl-rest)/addLaenge;      //Anzahl zu berechnende Frames, geht mit addLaenge auf
-        	System.out.println("Anzahl modulo addLaenge = "+rest+" input frames werden weggelassen");
-        	System.out.println("Insg. zu erzeugende Frames: "+totalAnzahl);
+        rest=amountFrames%addLaenge;        //Wird hier nicht weiterverarbeitet
+        totalFrameAmount =(amountFrames-rest)/addLaenge;      //Anzahl zu berechnende Frames, geht mit effectLengthInFrames auf
+        	System.out.println("Anzahl modulo effectLengthInFrames = "+rest+" input frames werden weggelassen");
+        	System.out.println("Insg. zu erzeugende Frames: "+ totalFrameAmount);
        
-        rest2=totalAnzahl%4;               //Aufteilung auf die 4 Threads
+        rest2= totalFrameAmount %4;               //Aufteilung auf die 4 Threads
         	System.out.println("rest2: "+rest2+" zu erzeugende Frames werden dem 4. Thread zus�tzlich zugeordnet");
-        threadLaenge=(totalAnzahl-rest2)/4;    //Anzahl zu berechnender Frames pro Thread
+        threadLaenge=(totalFrameAmount -rest2)/4;    //Anzahl zu berechnender Frames pro Thread
         	System.out.println("Jeder Thread erzeugt "+threadLaenge+" Frames");
         inputThreadLaenge=threadLaenge*addLaenge;  //Anzahl der Frames die jeder Thread zum verarbeiten bekommt
         	System.out.println("Jeder Thread bekommt "+inputThreadLaenge+" frames");
