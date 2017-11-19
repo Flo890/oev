@@ -29,6 +29,7 @@ public class View extends JFrame implements Observer {
     JLabel lastAction1, lastAction2, lastAction3;
     JLabel selectSrcInfo;
     JProgressBar progressBar;
+    private JPanel nachziehen;
 
     public View(Controller c) {
         controller = c;
@@ -137,6 +138,9 @@ public class View extends JFrame implements Observer {
             JRadioButton mode1 = new JRadioButton(aMode.getDisplayName());
             mode1.addActionListener(controller);
             mode1.setActionCommand(aMode.getActionCommand());
+            if(aMode.equals(Mode.SUMMIMAGE)){
+                mode1.setSelected(true);
+            }
             modeGroup.add(mode1);
             mode.add(mode1);
         }
@@ -151,18 +155,17 @@ public class View extends JFrame implements Observer {
         fktBox.setSelectedIndex(1);
         fkt.add(fktBox);
 
-        //amount text fields
-        JPanel amount = new JPanel(new FlowLayout());
+
 
         fkt.add(new JLabel(""));
         fkt.add(new JLabel(""));
 
-        fkt.add(amount);
-        JPanel nachziehen = new JPanel(new FlowLayout());
-        JLabel nachziehenLabel = new JLabel("addition amount: ");
+        nachziehen = new JPanel(new FlowLayout());
+        JLabel nachziehenLabel = new JLabel("light-trail length: ");
         nachziehen.add(nachziehenLabel);
         amountNachziehen = new JTextField(6);
         nachziehen.add(amountNachziehen);
+        nachziehen.setVisible(false); // will get visible when trailvideo mode gets selected
         fkt.add(nachziehen);
 
         settings.add(fkt);
@@ -256,8 +259,6 @@ public class View extends JFrame implements Observer {
 
         add(mainArea);
         pack();
-
-
     }
 
     public void update(Observable o, Object obj) {
@@ -269,6 +270,7 @@ public class View extends JFrame implements Observer {
         lastAction3.setText(m.getLastAction3());
         progressBar.setMaximum(m.getMaxOperations());
         progressBar.setValue(m.getProgress());
+        nachziehen.setVisible(m.getMode().equals(Mode.TRAILVIDEO));
     }
 
     public String getNachziehendeFrames() {

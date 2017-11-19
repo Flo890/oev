@@ -114,7 +114,10 @@ public class Model extends Observable {
      * @return total amount of frames to process (needed to calculate progress percentage)
      */
     public int getMaxOperations() {
-        return sourceFiles.length - effectLengthInFrames;
+        if(sourceFiles != null) {
+            return sourceFiles.length - effectLengthInFrames;
+        }
+        return 0;
     }
 
 
