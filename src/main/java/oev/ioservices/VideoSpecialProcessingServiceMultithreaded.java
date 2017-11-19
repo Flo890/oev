@@ -1,16 +1,18 @@
 package oev.ioservices;
 
 import oev.ioservices.threads.EngineThread;
+import oev.model.ColorFunction;
 import oev.mvc.Model;
 
-import javax.swing.SwingWorker;
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-public class VideoSpecialProcessingServiceMultithreaded extends SwingWorker implements FrameProcessingService{
+public class VideoSpecialProcessingServiceMultithreaded extends AbstractFrameProcessingService implements FrameProcessingService {
 
-    private int amountFrames;
-    private int fktNr;
     private int effectLengthInFrames;
-    private int startFrame;
 
     private int totalAmountFrames;
     private int amountFramesPerThread;
@@ -20,67 +22,57 @@ public class VideoSpecialProcessingServiceMultithreaded extends SwingWorker impl
     private EngineThread thread2;
     private EngineThread thread3;
     private EngineThread thread4;
-    
-    private String srcPath;
-    private String resPath;
-    
-    private Model model;
 
-    public VideoSpecialProcessingServiceMultithreaded(){
+    private Set<Integer> finishedThreads;
 
+    public VideoSpecialProcessingServiceMultithreaded(Model model) {
+        super(model);
     }
 
     /**
      * sets the given options and creates 4 threads, each with a fourth of the frames to process
-     * @param amountFrames
-     * @param aStartFrame
-     * @param function
-     * @param aEffectLengthInFrames
      */
-    public void setOptionsAndPrepareExecution(Integer amountFrames, Integer aStartFrame, Integer function, Integer aEffectLengthInFrames){
+    public void setOptionsAndPrepareExecution(ColorFunction function, Integer aEffectLengthInFrames, File[] sourceFiles, String resPath) {
 
-        this.amountFrames =amountFrames;
-        fktNr=function;
-        effectLengthInFrames = aEffectLengthInFrames;
-        startFrame=aStartFrame;
+        super.setOptionsAndPrepareExecution(function, sourceFiles, resPath);
 
-        totalAmountFrames = this.amountFrames - aEffectLengthInFrames;
-        rest= totalAmountFrames %4;
-        amountFramesPerThread =(totalAmountFrames -rest)/4;
+        this.effectLengthInFrames = aEffectLengthInFrames;
+
+        totalAmountFrames = jobMetaData.getAmountFrames() - effectLengthInFrames;
+        rest = totalAmountFrames % 4;
+        amountFramesPerThread = (totalAmountFrames - rest) / 4;
 
         System.out.println("Threads erstellen");
-        thread1 = new EngineThread(1,startFrame,(amountFramesPerThread +startFrame-1),fktNr, effectLengthInFrames, srcPath, resPath);
-        thread2 = new EngineThread(2,(amountFramesPerThread +startFrame),((2* amountFramesPerThread)+startFrame-1),fktNr, effectLengthInFrames, srcPath, resPath);
-        thread3 = new EngineThread(3,((2* amountFramesPerThread)+startFrame),((3* amountFramesPerThread)+startFrame-1),fktNr, effectLengthInFrames, srcPath, resPath);
-        thread4 = new EngineThread(4,((3* amountFramesPerThread)+startFrame),(totalAmountFrames +startFrame-1),fktNr, effectLengthInFrames, srcPath, resPath);
+        thread1 = new EngineThread(1, 0, (amountFramesPerThread + 0 - 1), effectLengthInFrames, engine, ioService, this);
+        thread2 = new EngineThread(2, (amountFramesPerThread + 0), ((2 * amountFramesPerThread) + 0 - 1), effectLengthInFrames, engine, ioService, this);
+        thread3 = new EngineThread(3, ((2 * amountFramesPerThread) + 0), ((3 * amountFramesPerThread) + 0 - 1), effectLengthInFrames, engine, ioService, this);
+        thread4 = new EngineThread(4, ((3 * amountFramesPerThread) + 0), (totalAmountFrames + 0 - 1), effectLengthInFrames, engine, ioService, this);
+
+        finishedThreads = new HashSet<>();
 
     }
-    
-    public void startThreads(){
-    	System.out.println("Threads starten");
+
+    public void loadAndProcessAllFrames() {
+        System.out.println("Threads starten");
         thread1.start();
         thread2.start();
         thread3.start();
         thread4.start();
     }
-    
-    public void setPaths(String s, String r){
-    	srcPath=s;
-    	resPath=r;
-    }
-    
-    public void setModel(Model m){
-    	model = m;
-    	thread1.setModel(model);
-    	thread2.setModel(model);
-    	thread3.setModel(model);
-    	thread4.setModel(model);
+
+    public void setModel(Model m) {
+        model = m;
+        thread1.setModel(model);
+        thread2.setModel(model);
+        thread3.setModel(model);
+        thread4.setModel(model);
     }
 
-	@Override
-	protected Object doInBackground() throws Exception {
-		startThreads();
-		return null;
-	}
-    
+    public void threadHasFinished(int threadNr){
+        finishedThreads.add(threadNr);
+        if(finishedThreads.size() == 4){
+            model.showJobFinishedMessage();
+        }
+    }
+
 }

@@ -1,93 +1,72 @@
 package oev.ioservices.threads;
 
+import oev.ioservices.IOService;
+import oev.ioservices.VideoSpecialProcessingServiceMultithreaded;
 import oev.mvc.Model;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
-public class EngineThread extends Thread{
+public class EngineThread extends Thread {
 
-    int threadNr;
-    int start;
-    int end;
-    int fktNr;
-    Engine engine;
-    int addLaenge;
+    private final int threadNr;
+    private final int start;
+    private final int end;
 
-    int fileIndex;
-    int fileIndex2;
-    BufferedImage resultImage;
-    
-    String srcPath;
-    String resPath;
-    
-    Model model;
+    private final int addLaenge;
 
-    public EngineThread(int tn, int s, int e, int f, int al, String sP, String rP){
+    private int fileIndex;
+    private int fileIndex2;
+    private BufferedImage lastImage;
+
+    private Model model;
+
+    private final Engine engine;
+    private final IOService ioService;
+    private final VideoSpecialProcessingServiceMultithreaded parent;
+
+    public EngineThread(int tn, int s, int e, int al, Engine aEngine, IOService aIOService, VideoSpecialProcessingServiceMultithreaded parent) {
         threadNr = tn;
         start = s;
         end = e;
-        fktNr = f;
         addLaenge = al;
-        srcPath = sP;
-        resPath = rP;
-        System.out.println(threadNr+": from "+start+" to "+end+" with fkt "+fktNr+" and AddLaenge "+addLaenge);
+        engine = aEngine;
+        ioService = aIOService;
+        this.parent = parent;
+        System.out.println(threadNr + ": from " + start + " to " + end + " with AddLaenge " + addLaenge);
     }
 
-    public void run(){
-        try{
+    public void run() {
+        try {
             load();
-        }
-        catch(IOException e){
-        	System.out.println(threadNr+": IOException caught in run()");
-        	System.out.println("     srcPath: "+srcPath);
-        	showFehlermeldung("IOException in thread "+threadNr+": "+e.getMessage());
+        } catch (IOException e) {
+            model.showErrorMessage("IOException in thread " + threadNr + ": " + e.getMessage());
         }
     }
 
-    public void load() throws IOException{
-    	System.out.println(threadNr+": load() called");
+    public void load() throws IOException {
+        System.out.println(threadNr + ": load() called");
         fileIndex = start;
-        for(int i = start; i<(end+1); i++){
+        for (int i = start; i < (end + 1); i++) {
 
-            engine = new Engine(ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex)+".png")));
+            lastImage = ioService.getFrameByIndex(fileIndex);
 
-            fileIndex2=fileIndex;//TODO hier war +1 ; hatte die einen sinn?
+            fileIndex2 = fileIndex;
 
-            for(int j = 0; j<addLaenge; j++){
-            	resultImage=engine.findNewColorForEachPixel(fktNr,ImageIO.read(new File(srcPath+"\\"+Integer.toString(fileIndex2)+".png")));
-            	fileIndex2++;
+            for (int j = 0; j < addLaenge; j++) {
+                engine.findNewColorForEachPixel(ioService.getFrameByIndex(fileIndex2), lastImage);
+                fileIndex2++;
             }
 
-            save();
+            ioService.save(lastImage, "resultImg"+fileIndex+".png");
             fileIndex++;
+            model.increaseProgress();
         }
-
+        parent.threadHasFinished(threadNr);
     }
 
-    public void save() throws IOException{
-        File saveFile = new File(resPath+"\\resultIMG"+fileIndex+".png");
-
-        ImageIO.write(resultImage, "png", saveFile);
-        System.out.println(threadNr+": File "+fileIndex+" saved");
-        model.setNewAction("Thread "+threadNr+": Saved img resultIMG"+fileIndex+".png");
-        model.increaseProgress();
-    }
-    
-    public void setModel(Model m){
-    	model = m;
-    }
-    
-    
-    
-    /**
-     * Gegebenen Text als Fehlermeldung anzeigen
-     * @param text
-     */
-    private static void showFehlermeldung(String text){
-    	JOptionPane.showMessageDialog(null, text, "IOException while running", JOptionPane.WARNING_MESSAGE);
+    public void setModel(Model m) {
+        model = m;
     }
 
 }

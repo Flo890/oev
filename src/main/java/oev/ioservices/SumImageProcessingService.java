@@ -1,42 +1,42 @@
 package oev.ioservices;
 
+import oev.ioservices.threads.Engine;
 import oev.mvc.Model;
 
-import javax.swing.SwingWorker;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 
-public class SumImageProcessingService extends SwingWorker implements FrameProcessingService {
+public class SumImageProcessingService extends AbstractFrameProcessingService implements FrameProcessingService {
 
-    private IOMachine iomachine;
-    private String srcPath;
-    private String resPath;
-    private Model model;
+  public SumImageProcessingService(Model model) {
+    super(model);
+  }
 
-    public SumImageProcessingService(){
+  /**
+   * loads each frame after another, processes it, and saves the result image
+   */
+  public void loadAndProcessAllFrames() {
+
+    model.increaseProgress();
+
+    BufferedImage outputImage = new BufferedImage(jobMetaData.getWidth(), jobMetaData.getHeight(), BufferedImage.TYPE_INT_RGB);
+    BufferedImage nextFrame = null;
+    while((nextFrame = ioService.getNextFrame())!=null){
+      engine.findNewColorForEachPixel(nextFrame, outputImage);
+      model.increaseProgress();
     }
 
-    
-    public void setOptionsAndPrepareExecution(Integer amountFrames, Integer startFrame, Integer function, Integer effectLengthInFrames){
-        //Files have be stored in folder "source" named "1.png" to for example "42.png"
-        //All files must have the same resolution!!
+    ioService.save(outputImage, "resultImg.png");
 
-        iomachine = new IOMachine(amountFrames,function ,startFrame,srcPath,resPath,model);
-    }
-    
-    public void setPaths(String s, String r){
-    	srcPath=s;
-    	resPath=r;
-    }
-    
-    public void setModel(Model m){
-    	model=m;
-    }
+    model.showJobFinishedMessage();
+  }
 
-    @Override
-	protected Object doInBackground() throws Exception {
-		iomachine.loadAndProcessAllFrames();
-		return null;
-	}
-    
+
+
+
 }
 
