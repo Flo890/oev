@@ -1,5 +1,7 @@
 package oev.integration;
 
+import oev.model.Mode;
+import oev.model.ColorFunction;
 import oev.mvc.Controller;
 import oev.mvc.Model;
 import org.junit.Test;
@@ -22,7 +24,10 @@ public class Mode1IntegrationTest {
             new File("classpath://ovmr-seq2/11.png")
     });
     model.setResPath(new File("resFolder/"));
-    model.setFkt(Model.MODE_SUMIMAGE);
+    model.setFkt(ColorFunction.HUMAN_PERCEIVED_BRIGHTNESS);
+    model.setMode(Mode.SUMMIMAGE);
+
+
 
   }
 

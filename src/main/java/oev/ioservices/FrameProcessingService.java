@@ -1,5 +1,6 @@
 package oev.ioservices;
 
+import oev.model.ColorFunction;
 import oev.mvc.Model;
 
 import java.io.File;
@@ -9,15 +10,14 @@ import java.io.File;
  */
 public interface FrameProcessingService {
 
-  void setResPath(String resPath);
-
   void setModel(Model model);
 
-  void setOptionsAndPrepareExecution(Integer function, Integer effectLengthInFrames);
+  void setOptionsAndPrepareExecution(ColorFunction function, File[] sourceFiles, String resPath);
 
   void execute();
 
   boolean cancel(boolean mayInterruptIfRunning);
 
-  void setSourceFiles(File[] sourceFiles);
+  void loadAndProcessAllFrames();
+
 }

@@ -1,5 +1,8 @@
 package oev.mvc;
 
+import oev.model.ColorFunction;
+import oev.model.Mode;
+
 import java.awt.Desktop;
 import java.awt.event.*;
 import java.io.IOException;
@@ -32,21 +35,6 @@ public class Controller implements ActionListener {
 
     String actionCommand = e.getActionCommand();
 
-    //set source path if there was chosen one in the file chooser or entered directly in the textfield
-//		if(actionCommand.equals("selectSrc") || actionCommand.equals("srcTextFeld")){
-//			String path = null;
-//			if(actionCommand.equals("selectSrc")) {
-//				JFileChooser fileChooser = new JFileChooser();
-//				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-//				fileChooser.showOpenDialog(null);
-//				path = fileChooser.getSelectedFile().getAbsolutePath();
-//			} else {
-//				path = view.getSrcPath();
-//			}
-//			model.setSrcPath(path);
-//			return;
-//		}
-
     if (actionCommand.equals("srcFilesSelected")) {
       JFileChooser fileChooser = (JFileChooser) e.getSource();
       model.setSourceFiles(fileChooser.getSelectedFiles());
@@ -58,28 +46,19 @@ public class Controller implements ActionListener {
       model.setResPath(resultPathChooser.getSelectedFile());
     }
 
-
     //set mode
-    if (actionCommand.equals("Mode") || actionCommand.equals("oev.ioservices.SumImageProcessingService") || actionCommand.equals("Vid") || actionCommand.equals("VidSpecial2Quad") || actionCommand.equals("Tunnel")) {
+    if (actionCommand.equals("Mode") || actionCommand.equals(Mode.SUMMIMAGE.getActionCommand()) || actionCommand.equals(Mode.SUMVIDEO.getActionCommand()) || actionCommand.equals(Mode.TRAILVIDEO.getActionCommand())) {
       ButtonModel jrb = view.modeGroup.getSelection();
-      if (jrb.getActionCommand().equals("oev.ioservices.SumImageProcessingService")) {
-        model.setMode(1);
+      if (jrb.getActionCommand().equals(Mode.SUMMIMAGE.getActionCommand())) {
+        model.setMode(Mode.SUMMIMAGE);
       }
-      if (jrb.getActionCommand().equals("Vid")) {
-        model.setMode(2);
+      if (jrb.getActionCommand().equals(Mode.SUMVIDEO.getActionCommand())) {
+        model.setMode(Mode.SUMVIDEO);
       }
-      if (jrb.getActionCommand().equals("VidSpecial")) {
-        model.setMode(3);
+      if (jrb.getActionCommand().equals(Mode.TRAILVIDEO.getActionCommand())) {
+        model.setMode(Mode.TRAILVIDEO);
       }
-      if (jrb.getActionCommand().equals("VidSpecial2Quad")) {
-        model.setMode(4);
-      }
-      if (jrb.getActionCommand().equals("Tunnel")) {
-        model.setMode(5);
-      }
-
     }
-
 
     //start processing
     if (actionCommand.equals("Start")) {
@@ -87,13 +66,13 @@ public class Controller implements ActionListener {
       if (view.fktBox.getSelectedIndex() == -1) {
         showErrorMessage("function is not selected");
       } else {
-        model.setFkt(view.fktBox.getSelectedIndex() + 1);
+        model.setFkt((ColorFunction) view.fktBox.getSelectedItem());
       }
 
       try {
         model.setEffectLengthInFrames(Integer.parseInt(view.getNachziehendeFrames()));
       } catch (Exception g) {
-        if (model.getMode() == 4 || model.getMode() == 5) {
+        if (model.getMode() == Mode.TRAILVIDEO) {
           showErrorMessage("addition amount is not set");
         }
       }
@@ -128,7 +107,7 @@ public class Controller implements ActionListener {
 
     //Info anzeigen
     if (actionCommand.equals("Info")) {
-      JLabel infoText = new JLabel("Version 1.3.2 from 10.09.2016    -   http://www.tf-fotovideo.de/oev/    -  by Florian Bemmann");
+      JLabel infoText = new JLabel("Version "+getProperties().getProperty("oevVersion")+" from "+getProperties().getProperty("releaseDate")+"    -   http://www.tf-fotovideo.de/oev/    -  by Florian Bemmann");
       infoText.addMouseListener(new MouseListener() {
 
         @Override
