@@ -31,6 +31,8 @@ public class SumImageProcessingService extends AbstractFrameProcessingService im
     }
 
     ioService.save(outputImage, "resultImg.png");
+
+    model.showJobFinishedMessage();
   }
 
 

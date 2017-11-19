@@ -28,6 +28,7 @@ public class VideoProcessingService extends AbstractFrameProcessingService imple
             model.increaseProgress();
         }
 
+        model.showJobFinishedMessage();
     }
 
 

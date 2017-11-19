@@ -1,6 +1,7 @@
 package oev.ioservices.threads;
 
 import oev.ioservices.IOService;
+import oev.ioservices.VideoSpecialProcessingServiceMultithreaded;
 import oev.mvc.Model;
 
 import java.awt.image.BufferedImage;
@@ -18,18 +19,20 @@ public class EngineThread extends Thread {
     private int fileIndex2;
     private BufferedImage lastImage;
 
-    Model model;
+    private Model model;
 
     private final Engine engine;
     private final IOService ioService;
+    private final VideoSpecialProcessingServiceMultithreaded parent;
 
-    public EngineThread(int tn, int s, int e, int al, Engine aEngine, IOService aIOService) {
+    public EngineThread(int tn, int s, int e, int al, Engine aEngine, IOService aIOService, VideoSpecialProcessingServiceMultithreaded parent) {
         threadNr = tn;
         start = s;
         end = e;
         addLaenge = al;
         engine = aEngine;
         ioService = aIOService;
+        this.parent = parent;
         System.out.println(threadNr + ": from " + start + " to " + end + " with AddLaenge " + addLaenge);
     }
 
@@ -59,7 +62,7 @@ public class EngineThread extends Thread {
             fileIndex++;
             model.increaseProgress();
         }
-
+        parent.threadHasFinished(threadNr);
     }
 
     public void setModel(Model m) {

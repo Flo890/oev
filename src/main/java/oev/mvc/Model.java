@@ -276,7 +276,7 @@ public class Model extends Observable {
         return mode;
     }
 
-    public String getSourceFIlesInfo() {
+    public String getSourceFilesInfo() {
         if (sourceFiles != null && sourceFiles.length > 0) {
             String firstFilePath = sourceFiles[0].getAbsolutePath();
             String directory = firstFilePath.substring(0, firstFilePath.lastIndexOf("\\"));
@@ -284,6 +284,10 @@ public class Model extends Observable {
         } else {
             return "click button to select input files";
         }
+    }
+
+    public void showJobFinishedMessage(){
+        JOptionPane.showMessageDialog(null, "execution has completed");
     }
 
 }

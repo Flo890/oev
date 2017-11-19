@@ -74,7 +74,7 @@ public class View extends JFrame implements Observer {
 
         selectSrcInfo = new JLabel();
         //new multi file selector:
-        JButton selectInputFilesButton = new JButton("select");
+        JButton selectInputFilesButton = new JButton("select input files");
         selectInputFilesButton.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -90,7 +90,7 @@ public class View extends JFrame implements Observer {
         selectSource.add(selectInputFilesButton);
 
         JPanel selectResult = new JPanel(new FlowLayout());
-        JButton selectRes = new JButton("Destination: ");
+        JButton selectRes = new JButton("select output folder");
         selectRes.addActionListener(controller);
         selectRes.addActionListener(e -> {
             String path = null;
@@ -262,7 +262,7 @@ public class View extends JFrame implements Observer {
 
     public void update(Observable o, Object obj) {
         Model m = (Model) o;
-        selectSrcInfo.setText(m.getSourceFIlesInfo());
+        selectSrcInfo.setText(m.getSourceFilesInfo());
         resPath.setText(m.getResPath());
         lastAction1.setText(m.getLastAction1());
         lastAction2.setText(m.getLastAction2());
@@ -274,10 +274,5 @@ public class View extends JFrame implements Observer {
     public String getNachziehendeFrames() {
         return amountNachziehen.getText();
     }
-
-    public String getResPath() {
-        return resPath.getText();
-    }
-
 
 }

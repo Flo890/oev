@@ -5,6 +5,10 @@ import oev.model.ColorFunction;
 import oev.mvc.Model;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class VideoSpecialProcessingServiceMultithreaded extends AbstractFrameProcessingService implements FrameProcessingService {
 
@@ -18,6 +22,8 @@ public class VideoSpecialProcessingServiceMultithreaded extends AbstractFramePro
     private EngineThread thread2;
     private EngineThread thread3;
     private EngineThread thread4;
+
+    private Set<Integer> finishedThreads;
 
     public VideoSpecialProcessingServiceMultithreaded(Model model) {
         super(model);
@@ -37,10 +43,12 @@ public class VideoSpecialProcessingServiceMultithreaded extends AbstractFramePro
         amountFramesPerThread = (totalAmountFrames - rest) / 4;
 
         System.out.println("Threads erstellen");
-        thread1 = new EngineThread(1, 0, (amountFramesPerThread + 0 - 1), effectLengthInFrames, engine, ioService);
-        thread2 = new EngineThread(2, (amountFramesPerThread + 0), ((2 * amountFramesPerThread) + 0 - 1), effectLengthInFrames, engine, ioService);
-        thread3 = new EngineThread(3, ((2 * amountFramesPerThread) + 0), ((3 * amountFramesPerThread) + 0 - 1), effectLengthInFrames, engine, ioService);
-        thread4 = new EngineThread(4, ((3 * amountFramesPerThread) + 0), (totalAmountFrames + 0 - 1), effectLengthInFrames, engine, ioService);
+        thread1 = new EngineThread(1, 0, (amountFramesPerThread + 0 - 1), effectLengthInFrames, engine, ioService, this);
+        thread2 = new EngineThread(2, (amountFramesPerThread + 0), ((2 * amountFramesPerThread) + 0 - 1), effectLengthInFrames, engine, ioService, this);
+        thread3 = new EngineThread(3, ((2 * amountFramesPerThread) + 0), ((3 * amountFramesPerThread) + 0 - 1), effectLengthInFrames, engine, ioService, this);
+        thread4 = new EngineThread(4, ((3 * amountFramesPerThread) + 0), (totalAmountFrames + 0 - 1), effectLengthInFrames, engine, ioService, this);
+
+        finishedThreads = new HashSet<>();
 
     }
 
@@ -58,6 +66,13 @@ public class VideoSpecialProcessingServiceMultithreaded extends AbstractFramePro
         thread2.setModel(model);
         thread3.setModel(model);
         thread4.setModel(model);
+    }
+
+    public void threadHasFinished(int threadNr){
+        finishedThreads.add(threadNr);
+        if(finishedThreads.size() == 4){
+            model.showJobFinishedMessage();
+        }
     }
 
 }
