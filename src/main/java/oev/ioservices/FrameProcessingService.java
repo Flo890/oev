@@ -2,19 +2,22 @@ package oev.ioservices;
 
 import oev.mvc.Model;
 
+import java.io.File;
+
 /**
  * Created by Flo on 09/09/2016.
  */
 public interface FrameProcessingService {
 
-    void setPaths(String srcPath, String resPath);
+  void setResPath(String resPath);
 
-    void setModel(Model model);
+  void setModel(Model model);
 
-    void setOptionsAndPrepareExecution(Integer amountFrames, Integer startFrame, Integer function, Integer effectLengthInFrames);
+  void setOptionsAndPrepareExecution(Integer function, Integer effectLengthInFrames);
 
-    void execute();
+  void execute();
 
-    boolean cancel(boolean mayInterruptIfRunning);
+  boolean cancel(boolean mayInterruptIfRunning);
 
+  void setSourceFiles(File[] sourceFiles);
 }

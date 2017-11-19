@@ -12,11 +12,8 @@ import javax.swing.SwingWorker;
 public class VideoProcessingService extends SwingWorker implements FrameProcessingService{
 
     private int fktNr;
-    private int anzahlBilder;
-    private int startFrame;
     private BufferedImage lastResultImage;
     private int fileIndex;
-    private String srcPath;
     private String resPath;
     private Model model;
 
@@ -24,13 +21,13 @@ public class VideoProcessingService extends SwingWorker implements FrameProcessi
 
     }
 
-    public void setOptionsAndPrepareExecution(Integer amountFrames, Integer aStartFrame, Integer function, Integer effectLengthInFrames){
+    public void setOptionsAndPrepareExecution(Integer function, Integer effectLengthInFrames){
         //Files have to be stored in folder VidSource, named "1.png" to for example "42.png"
         //All files must have the same resolution!!
-        anzahlBilder=amountFrames;
+
 
         fktNr=function;
-        startFrame=aStartFrame;
+
     }
     
 
@@ -88,8 +85,7 @@ public class VideoProcessingService extends SwingWorker implements FrameProcessi
     }
     
     
-    public void setPaths(String s, String r){
-    	srcPath=s;
+    public void setResPath(String r){
     	resPath=r;
     }
     

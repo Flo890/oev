@@ -7,11 +7,8 @@ import javax.swing.SwingWorker;
 
 public class TunnelFrameProcessingService extends SwingWorker implements FrameProcessingService{
 
-	private int anzahl;
 	private int fktNr;
 	private int addLaenge;
-	private int startFrame;
-	private String srcPath;
 	private String resPath;
 	private Model model;
 	
@@ -24,17 +21,16 @@ public class TunnelFrameProcessingService extends SwingWorker implements FramePr
 	
 	private TunnelEngineThread thread1, thread2, thread3, thread4;
 	
-	public void setPaths(String sP, String rP) {
-				srcPath=sP;
+	public void setResPath(String rP) {
 				resPath=rP;
 	}
 
-	public void setOptionsAndPrepareExecution(Integer amountFrames, Integer aStartFrame, Integer function, Integer effectLengthInFrames){
+	public void setOptionsAndPrepareExecution(Integer function, Integer effectLengthInFrames){
 
-        anzahl=amountFrames;
+
         fktNr=function;
         addLaenge=effectLengthInFrames;
-        startFrame=aStartFrame;
+
 
         	System.out.println("Anzahl input: "+amountFrames+" , effectLengthInFrames: "+addLaenge);
         	

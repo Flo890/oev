@@ -7,10 +7,8 @@ import javax.swing.SwingWorker;
 
 public class VideoSpecialProcessingServiceMultithreaded extends SwingWorker implements FrameProcessingService{
 
-    private int amountFrames;
     private int fktNr;
     private int effectLengthInFrames;
-    private int startFrame;
 
     private int totalAmountFrames;
     private int amountFramesPerThread;
@@ -20,8 +18,7 @@ public class VideoSpecialProcessingServiceMultithreaded extends SwingWorker impl
     private EngineThread thread2;
     private EngineThread thread3;
     private EngineThread thread4;
-    
-    private String srcPath;
+
     private String resPath;
     
     private Model model;
@@ -32,17 +29,14 @@ public class VideoSpecialProcessingServiceMultithreaded extends SwingWorker impl
 
     /**
      * sets the given options and creates 4 threads, each with a fourth of the frames to process
-     * @param amountFrames
-     * @param aStartFrame
      * @param function
      * @param aEffectLengthInFrames
      */
-    public void setOptionsAndPrepareExecution(Integer amountFrames, Integer aStartFrame, Integer function, Integer aEffectLengthInFrames){
+    public void setOptionsAndPrepareExecution(Integer function, Integer aEffectLengthInFrames){
 
-        this.amountFrames =amountFrames;
+
         fktNr=function;
         effectLengthInFrames = aEffectLengthInFrames;
-        startFrame=aStartFrame;
 
         totalAmountFrames = this.amountFrames - aEffectLengthInFrames;
         rest= totalAmountFrames %4;
@@ -64,8 +58,7 @@ public class VideoSpecialProcessingServiceMultithreaded extends SwingWorker impl
         thread4.start();
     }
     
-    public void setPaths(String s, String r){
-    	srcPath=s;
+    public void setResPath(String r){
     	resPath=r;
     }
     
