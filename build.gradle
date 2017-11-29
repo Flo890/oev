@@ -30,3 +30,18 @@ dependencies {
 
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.9.1'
 }
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'OEV',
+                'Implementation-Version': oevVersion,
+                'Main-Class': 'oev.App'
+    }
+    baseName = project.name + '-' + oevVersion + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from("${projectDir}"){
+        include '*.properties'
+    }
+    with jar
+}
