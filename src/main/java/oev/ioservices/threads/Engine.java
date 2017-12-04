@@ -8,11 +8,11 @@ import java.awt.image.BufferedImage;
 
 public class Engine {
 
-  private final int width;
-  private final int height;
-  private final ColorComparisonFunction colorComparisonFunction;
+  protected final int width;
+  protected final int height;
+  protected final ColorComparisonFunction colorComparisonFunction;
 
-  int NrOfAdds;
+  protected int NrOfAdds;
 
 
   public Engine(int width, int height, ColorFunction function) {

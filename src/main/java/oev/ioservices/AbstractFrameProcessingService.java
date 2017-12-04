@@ -1,6 +1,7 @@
 package oev.ioservices;
 
 import oev.ioservices.threads.Engine;
+import oev.ioservices.threads.EngineMultiRecentImages;
 import oev.model.ColorFunction;
 import oev.mvc.Model;
 
@@ -23,7 +24,7 @@ public abstract class AbstractFrameProcessingService extends SwingWorker impleme
   public void setOptionsAndPrepareExecution(ColorFunction function, File[] sourceFiles, String resPath) {
     ioService = new IOService(sourceFiles, resPath, model);
     jobMetaData = ioService.fetchJobMetaData();
-    engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function);
+    engine = new EngineMultiRecentImages(jobMetaData.getWidth(), jobMetaData.getHeight(), function, 3);//TODO this is hardcoded
   }
 
   public void setModel(Model m) {

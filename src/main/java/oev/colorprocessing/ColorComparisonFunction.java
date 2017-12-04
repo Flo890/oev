@@ -10,7 +10,7 @@ public interface ColorComparisonFunction {
      * @param color1
      * @param color2
      * @param nrOfAdds a sum value, used for average calculations
-     * @return
+     * @return the brighter one of both
      */
     Integer compare(Integer color1, Integer color2, Integer nrOfAdds);
 
