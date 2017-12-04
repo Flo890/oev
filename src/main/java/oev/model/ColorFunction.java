@@ -2,7 +2,7 @@ package oev.model;
 
 public enum ColorFunction {
 
-    PHYSICAL_BRIGHTNESS(0,"physical"), HUMAN_PERCEIVED_BRIGHTNESS(1,"human perception (recommended)"), LIGHTED_BRIGHTNESS(2,"luminance"), AVG_BRIGHTNESS(3,"average");
+    PHYSICAL_BRIGHTNESS(0,"physical"), HUMAN_PERCEIVED_BRIGHTNESS(1,"human perception (recommended)"), LIGHTED_BRIGHTNESS(2,"luminance");
 
     private final int index;
     private final String displayName;

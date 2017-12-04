@@ -16,16 +16,11 @@ public class HumanPerceivedBrightnessCCF implements ColorComparisonFunction {
      * @return
      */
     @Override
-    public Integer compare(Integer color1, Integer color2, Integer nrOfAdds) {
+    public boolean compare(Integer color1, Integer color2) {
 
         //just unwrapped some method-code of the java Color class to improve performance (=> don't need to create Color objects anymore)
 
-        if(((((color1 >> 16) & 0xFF)*299)+(((color1 >> 8) & 0xFF)*587)+(((color1 >> 0) & 0xFF)*114)) < ((((color2 >> 16) & 0xFF)*299)+(((color2 >> 8) & 0xFF)*587)+(((color2 >> 0) & 0xFF)*114))){
-            return color2;
-        }
-        else{
-            return color1;
-        }
+        return(((((color1 >> 16) & 0xFF)*299)+(((color1 >> 8) & 0xFF)*587)+(((color1 >> 0) & 0xFF)*114)) < ((((color2 >> 16) & 0xFF)*299)+(((color2 >> 8) & 0xFF)*587)+(((color2 >> 0) & 0xFF)*114)));
 
     }
 }

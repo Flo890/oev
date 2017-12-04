@@ -12,12 +12,9 @@ public class Engine {
   private final int height;
   private final ColorComparisonFunction colorComparisonFunction;
 
-  int NrOfAdds;
-
 
   public Engine(int width, int height, ColorFunction function) {
 
-    NrOfAdds = 0;
     this.width = width;
     this.height = height;
 
@@ -31,9 +28,6 @@ public class Engine {
       case LIGHTED_BRIGHTNESS:
         colorComparisonFunction = new LightedBrightnessCCF();
         break;
-      case AVG_BRIGHTNESS:
-        colorComparisonFunction = new AverageBrightnessCCF();
-        break;
       default:
         colorComparisonFunction = null;
         throw new IllegalStateException("function unknown: "+function);
@@ -45,12 +39,12 @@ public class Engine {
   public void findNewColorForEachPixel(BufferedImage inputFrame, BufferedImage outputImage) {
 
     int x = 0;
-    NrOfAdds++;
     for (int j = 0; j < width; j++) {  //Alle Zeilen durchlaufen
       int y = 0;
       for (int k = 0; k < height; k++) {  //Alle Pixel durchlaufen
-
-        outputImage.setRGB(x, y, colorComparisonFunction.compare(outputImage.getRGB(x, y), inputFrame.getRGB(x, y), NrOfAdds));
+        if(colorComparisonFunction.compare(outputImage.getRGB(x, y), inputFrame.getRGB(x, y))) {
+          outputImage.setRGB(x, y, inputFrame.getRGB(x,y));
+        }
         y++;
       }
       x++;

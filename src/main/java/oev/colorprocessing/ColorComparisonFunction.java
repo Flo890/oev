@@ -9,9 +9,8 @@ public interface ColorComparisonFunction {
      * compares the given color by a specific rule and returns one of them (or a new created one, as the average function does)
      * @param color1
      * @param color2
-     * @param nrOfAdds a sum value, used for average calculations
-     * @return
+     * @return true, if color 2 is brighter than color 1
      */
-    Integer compare(Integer color1, Integer color2, Integer nrOfAdds);
+    boolean compare(Integer color1, Integer color2);
 
 }
