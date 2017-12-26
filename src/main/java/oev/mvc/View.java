@@ -30,6 +30,7 @@ public class View extends JFrame implements Observer {
     JLabel selectSrcInfo;
     JProgressBar progressBar;
     private JPanel nachziehen;
+    JToggleButton useNewAlgoToggle;
 
     public View(Controller c) {
         controller = c;
@@ -168,6 +169,11 @@ public class View extends JFrame implements Observer {
         nachziehen.setVisible(false); // will get visible when trailvideo mode gets selected
         fkt.add(nachziehen);
 
+        // will be set visible / invisible in update method
+        useNewAlgoToggle = new JToggleButton("use new algorithm");
+        fkt.add(useNewAlgoToggle);
+        useNewAlgoToggle.addActionListener(controller);
+
         settings.add(fkt);
 
         untenArea.add(settings, BorderLayout.CENTER);
@@ -271,6 +277,7 @@ public class View extends JFrame implements Observer {
         progressBar.setMaximum(m.getMaxOperations());
         progressBar.setValue(m.getProgress());
         nachziehen.setVisible(m.getMode().equals(Mode.TRAILVIDEO));
+        useNewAlgoToggle.setVisible(m.getMode() == Mode.SUMMIMAGE);
     }
 
     public String getNachziehendeFrames() {

@@ -21,6 +21,7 @@ public class Model extends Observable {
     private Mode mode;
     private ColorFunction fkt;
     private int effectLengthInFrames;//the amount of frames used in the mode Special Video (=> higher amount of frames means longer light-trails)
+    private boolean useNewAlgorithm;
 
     //to display progress / last action:
     private String lastAction1;
@@ -293,4 +294,11 @@ public class Model extends Observable {
         JOptionPane.showMessageDialog(null, "execution has completed");
     }
 
+    public boolean isUseNewAlgorithm() {
+        return useNewAlgorithm;
+    }
+
+    public void setUseNewAlgorithm(boolean useNewAlgorithm) {
+        this.useNewAlgorithm = useNewAlgorithm;
+    }
 }

@@ -10,10 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import javax.swing.ButtonModel;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 
 public class Controller implements ActionListener {
@@ -137,6 +134,10 @@ public class Controller implements ActionListener {
       });
 
       JOptionPane.showMessageDialog(null, infoText, "About", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    if (actionCommand.equals(view.useNewAlgoToggle.getText())) {
+      model.setUseNewAlgorithm(((JToggleButton) e.getSource()).isSelected());
     }
   }
 
