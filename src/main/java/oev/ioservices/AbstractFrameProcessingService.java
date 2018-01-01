@@ -24,7 +24,7 @@ public abstract class AbstractFrameProcessingService extends SwingWorker impleme
     ioService = new IOService(sourceFiles, resPath, model);
     jobMetaData = ioService.fetchJobMetaData();
 
-    engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function, model.isMultithreadingEnabled() ? model.getAmountThreads() : 1);
+    createEngine(function);
   }
 
   public void setModel(Model m) {
@@ -35,6 +35,10 @@ public abstract class AbstractFrameProcessingService extends SwingWorker impleme
   protected Object doInBackground() throws Exception {
     loadAndProcessAllFrames();
     return null;
+  }
+
+  protected void createEngine(ColorFunction function){
+    engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function, model.isMultithreadingEnabled() ? model.getAmountThreads() : 1);
   }
 
 }

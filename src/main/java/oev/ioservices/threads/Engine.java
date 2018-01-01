@@ -4,6 +4,7 @@ import oev.colorprocessing.*;
 import oev.model.ColorFunction;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
@@ -15,8 +16,6 @@ public class Engine {
   private final int height;
   private final ColorComparisonFunction colorComparisonFunction;
   private final int threadsAmount;
-  private final Map<EngineThreadV2,Boolean> threads = new HashMap<>();
-  private boolean everyThreadFinished = false;
 
 
   public Engine(int width, int height, ColorFunction function, int threads) {
@@ -46,39 +45,35 @@ public class Engine {
 
     int blocksize = height/threadsAmount;
 
+    ExecutorService executor = Executors.newFixedThreadPool(threadsAmount);
+    Map<FutureTask<int[]>,Integer> taskList = new HashMap<>();
+
+
+
     for(int threadIndex = 0; threadIndex<threadsAmount; threadIndex++) {
       int startY = threadIndex * blocksize;
       int endY = startY + blocksize;
       if (threadIndex == threadsAmount-1) {
         endY = height;
       }
-      EngineThreadV2 thread = new EngineThreadV2(inputFrame, outputImage, width, height, colorComparisonFunction, startY, endY, this, threadIndex);
-      threads.put(thread,false);
-      thread.start();
+      FutureTask<int[]> futureTask_1 = new FutureTask<int[]>(new EngineThreadV2(inputFrame, outputImage, width, height, colorComparisonFunction, startY, endY));
+      taskList.put(futureTask_1,startY);
+      executor.execute(futureTask_1);
     }
 
-    while(true){
-      if(everyThreadFinished){
-        break;
-      } else {
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+
+    // wait until all threads finished. get is a blocking call
+    for(Map.Entry<FutureTask<int[]>,Integer> aTask : taskList.entrySet()){
+      try {
+        int[] rgbArray = aTask.getKey().get();
+        outputImage.setRGB(0, aTask.getValue(), width, blocksize, rgbArray, 0, width);
+      } catch (InterruptedException |  ExecutionException e) {
+        throw new RuntimeException(e);
       }
     }
-
+    executor.shutdown();
     System.out.println("ms taken for frame: "+(new Date().getTime()-starttime));
-  }
 
-  public void threadFinishedCallback(EngineThreadV2 thread){
-    threads.put(thread,true);
-    boolean everyThreadFinished = false;
-    for(Boolean aThreadHasFinished : threads.values()){
-      everyThreadFinished = aThreadHasFinished;
-    }
-    this.everyThreadFinished = everyThreadFinished;
   }
 
 }
