@@ -30,6 +30,9 @@ public class Model extends Observable {
 
     private FrameProcessingService frameProcessingService;
 
+    private int amountThreads;
+    private boolean multithreadingEnabled;
+
 
     public Model() {
 
@@ -41,6 +44,8 @@ public class Model extends Observable {
         lastAction3 = "-";
         operation = 0;
 
+        amountThreads = Runtime.getRuntime().availableProcessors();
+        multithreadingEnabled = true;
     }
 
     public void setSourceFiles(File[] files) {
@@ -293,4 +298,16 @@ public class Model extends Observable {
         JOptionPane.showMessageDialog(null, "execution has completed");
     }
 
+    public boolean isMultithreadingEnabled() {
+        return multithreadingEnabled;
+    }
+
+    public void setMultithreadingEnabled(boolean multithreadingEnabled) {
+        this.multithreadingEnabled = multithreadingEnabled;
+        LOGGER.info("multithreading checkbox changed: "+this.multithreadingEnabled);
+    }
+
+    public int getAmountThreads() {
+        return amountThreads;
+    }
 }

@@ -23,7 +23,8 @@ public abstract class AbstractFrameProcessingService extends SwingWorker impleme
   public void setOptionsAndPrepareExecution(ColorFunction function, File[] sourceFiles, String resPath) {
     ioService = new IOService(sourceFiles, resPath, model);
     jobMetaData = ioService.fetchJobMetaData();
-    engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function);
+
+    engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function, model.isMultithreadingEnabled() ? model.getAmountThreads() : 1);
   }
 
   public void setModel(Model m) {

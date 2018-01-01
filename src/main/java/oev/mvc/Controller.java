@@ -24,8 +24,8 @@ public class Controller implements ActionListener {
 
   public Controller(Properties prop) {
     properties = prop;
-    view = new View(this);
     model = new Model();
+    view = new View(this);
     model.addObserver(view);
     view.setVisible(true);
   }

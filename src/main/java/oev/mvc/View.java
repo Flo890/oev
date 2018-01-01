@@ -3,7 +3,7 @@ package oev.mvc;
 import oev.model.ColorFunction;
 import oev.model.Mode;
 
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.util.Observer;
 
 import java.util.Observable;
@@ -11,8 +11,6 @@ import java.util.Observable;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -167,6 +165,11 @@ public class View extends JFrame implements Observer {
         nachziehen.add(amountNachziehen);
         nachziehen.setVisible(false); // will get visible when trailvideo mode gets selected
         fkt.add(nachziehen);
+
+        JCheckBox multithreadingCheckbox = new JCheckBox("use multithreading ("+controller.getModel().getAmountThreads()+" cores detected)");
+        multithreadingCheckbox.setSelected(controller.getModel().isMultithreadingEnabled());
+        multithreadingCheckbox.addItemListener(e -> controller.getModel().setMultithreadingEnabled(((JCheckBox)e.getItem()).isSelected()));
+        fkt.add(multithreadingCheckbox);
 
         settings.add(fkt);
 
