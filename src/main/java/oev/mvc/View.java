@@ -28,6 +28,7 @@ public class View extends JFrame implements Observer {
     JLabel selectSrcInfo;
     JProgressBar progressBar;
     private JPanel nachziehen;
+    private JCheckBox multithreadingCheckbox;
 
     public View(Controller c) {
         controller = c;
@@ -166,7 +167,7 @@ public class View extends JFrame implements Observer {
         nachziehen.setVisible(false); // will get visible when trailvideo mode gets selected
         fkt.add(nachziehen);
 
-        JCheckBox multithreadingCheckbox = new JCheckBox("use multithreading ("+controller.getModel().getAmountThreads()+" cores detected)");
+        multithreadingCheckbox = new JCheckBox("use multithreading ("+controller.getModel().getAmountThreads()+" cores detected)");
         multithreadingCheckbox.setSelected(controller.getModel().isMultithreadingEnabled());
         multithreadingCheckbox.addItemListener(e -> controller.getModel().setMultithreadingEnabled(((JCheckBox)e.getItem()).isSelected()));
         fkt.add(multithreadingCheckbox);
@@ -273,7 +274,8 @@ public class View extends JFrame implements Observer {
         lastAction3.setText(m.getLastAction3());
         progressBar.setMaximum(m.getMaxOperations());
         progressBar.setValue(m.getProgress());
-        nachziehen.setVisible(m.getMode().equals(Mode.TRAILVIDEO));
+        nachziehen.setVisible(Mode.TRAILVIDEO.equals(m.getMode()));
+        multithreadingCheckbox.setEnabled(!Mode.TRAILVIDEO.equals(m.getMode()));
     }
 
     public String getNachziehendeFrames() {

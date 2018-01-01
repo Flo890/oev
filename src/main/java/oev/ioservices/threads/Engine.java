@@ -4,8 +4,7 @@ import oev.colorprocessing.*;
 import oev.model.ColorFunction;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
 
@@ -16,6 +15,8 @@ public class Engine {
   private final int height;
   private final ColorComparisonFunction colorComparisonFunction;
   private final int threadsAmount;
+  private final Map<EngineThreadV2,Boolean> threads = new HashMap<>();
+  private boolean everyThreadFinished = false;
 
 
   public Engine(int width, int height, ColorFunction function, int threads) {
@@ -41,38 +42,43 @@ public class Engine {
 
 
   public void findNewColorForEachPixel(BufferedImage inputFrame, BufferedImage outputImage) {
+    long starttime = new Date().getTime();
 
-    ExecutorService executor = Executors.newFixedThreadPool(threadsAmount);
-    List<FutureTask<Void>> taskList = new ArrayList<FutureTask<Void>>();
+    int blocksize = height/threadsAmount;
 
     for(int threadIndex = 0; threadIndex<threadsAmount; threadIndex++) {
-      final int thisThreadsIndex = threadIndex;
-      FutureTask<Void> futureTask_1 = new FutureTask<Void>(new EngineThreadV2(inputFrame, outputImage, width, height, colorComparisonFunction ,new Function(){
-        /**
-        a individual function for each thread, which tells whether an y (=image row) is this threads' work
-         @param o Integer, the y index (= a row index)
-         @return boolean. true if this y index should be processed by this thread
-         */
-        @Override
-        public Object apply(Object o) {
-          return (((Integer) o) % threadsAmount == thisThreadsIndex);
-        }
-      }));
-      taskList.add(futureTask_1);
-      executor.execute(futureTask_1);
+      int startY = threadIndex * blocksize;
+      int endY = startY + blocksize;
+      if (threadIndex == threadsAmount-1) {
+        endY = height;
+      }
+      EngineThreadV2 thread = new EngineThreadV2(inputFrame, outputImage, width, height, colorComparisonFunction, startY, endY, this, threadIndex);
+      threads.put(thread,false);
+      thread.start();
     }
 
-
-    // wait until all threads finished. get is a blocking call
-    for(FutureTask<Void> aTask : taskList){
-      try {
-        aTask.get();
-      } catch (InterruptedException |  ExecutionException e) {
-       throw new RuntimeException(e);
+    while(true){
+      if(everyThreadFinished){
+        break;
+      } else {
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
     }
-    executor.shutdown();
 
+    System.out.println("ms taken for frame: "+(new Date().getTime()-starttime));
+  }
+
+  public void threadFinishedCallback(EngineThreadV2 thread){
+    threads.put(thread,true);
+    boolean everyThreadFinished = false;
+    for(Boolean aThreadHasFinished : threads.values()){
+      everyThreadFinished = aThreadHasFinished;
+    }
+    this.everyThreadFinished = everyThreadFinished;
   }
 
 }
