@@ -1,3 +1,8 @@
+## OEV 1.4.4 (2018-01-02)
+
+- input files: now supporting png, jpg, jpeg, and bmp
+- bugfix concerning mode selection
+
 ## OEV 1.4.3 (2018-01-01)
 
 Performance improvement:

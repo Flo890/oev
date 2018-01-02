@@ -78,7 +78,7 @@ public class View extends JFrame implements Observer {
         selectInputFilesButton.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "PNG Images", "png");
+                    "Image files", "png","jpg","jpeg","bmp");
             chooser.setFileFilter(filter);
             chooser.setMultiSelectionEnabled(true);
             int returnVal = chooser.showOpenDialog(selectSource);
@@ -137,7 +137,7 @@ public class View extends JFrame implements Observer {
             JRadioButton mode1 = new JRadioButton(aMode.getDisplayName());
             mode1.addActionListener(controller);
             mode1.setActionCommand(aMode.getActionCommand());
-            if(aMode.equals(Mode.SUMMIMAGE)){
+            if(aMode.equals(controller.getModel().getMode())){
                 mode1.setSelected(true);
             }
             modeGroup.add(mode1);

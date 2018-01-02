@@ -43,6 +43,7 @@ public class Model extends Observable {
         lastAction2 = "-";
         lastAction3 = "-";
         operation = 0;
+        mode = Mode.SUMMIMAGE;
 
         amountThreads = Runtime.getRuntime().availableProcessors();
         multithreadingEnabled = true;
