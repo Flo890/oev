@@ -1,8 +1,10 @@
 package oev.mvc;
 
 import oev.ioservices.*;
+import oev.ioservices.binningalgo.BinningSumImageFrameProcessingService;
 import oev.model.ColorFunction;
 import oev.model.Mode;
+import oev.model.SumAlgo;
 
 import java.io.*;
 import java.util.Observable;
@@ -21,6 +23,7 @@ public class Model extends Observable {
     private Mode mode;
     private ColorFunction fkt;
     private int effectLengthInFrames;//the amount of frames used in the mode Special Video (=> higher amount of frames means longer light-trails)
+    private SumAlgo sumAlgo = SumAlgo.KEEP_BRIGHTEST;
 
     //to display progress / last action:
     private String lastAction1;
@@ -40,7 +43,7 @@ public class Model extends Observable {
         lastAction2 = "-";
         lastAction3 = "-";
         operation = 0;
-
+        mode = Mode.SUMMIMAGE;
     }
 
     public void setSourceFiles(File[] files) {
@@ -156,7 +159,14 @@ public class Model extends Observable {
         checkPaths();
         switch (mode) {
             case SUMMIMAGE:
-                frameProcessingService = new SumImageProcessingService(this);
+                if (SumAlgo.KEEP_BRIGHTEST.equals(sumAlgo)) {
+                    frameProcessingService = new SumImageProcessingService(this);
+                } else if (SumAlgo.SUM_RGB.equals(sumAlgo)) {
+                    frameProcessingService = new BinningSumImageFrameProcessingService(this);
+                } else {
+                    throw new IllegalArgumentException("unknown sumalgo "+sumAlgo);
+                }
+
                 frameProcessingService.setOptionsAndPrepareExecution(
                         fkt,
                         sourceFiles,
@@ -293,4 +303,12 @@ public class Model extends Observable {
         JOptionPane.showMessageDialog(null, "execution has completed");
     }
 
+    public SumAlgo getSumAlgo() {
+        return sumAlgo;
+    }
+
+    public void setSumAlgo(SumAlgo sumAlgo) {
+        this.sumAlgo = sumAlgo;
+        System.out.println("set sumalgo to "+sumAlgo);
+    }
 }

@@ -2,8 +2,9 @@ package oev.mvc;
 
 import oev.model.ColorFunction;
 import oev.model.Mode;
+import oev.model.SumAlgo;
 
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.util.Observer;
 
 import java.util.Observable;
@@ -11,8 +12,6 @@ import java.util.Observable;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,6 +29,7 @@ public class View extends JFrame implements Observer {
     JLabel selectSrcInfo;
     JProgressBar progressBar;
     private JPanel nachziehen;
+    private JComboBox sumAlgoCombobox;
 
     public View(Controller c) {
         controller = c;
@@ -138,7 +138,7 @@ public class View extends JFrame implements Observer {
             JRadioButton mode1 = new JRadioButton(aMode.getDisplayName());
             mode1.addActionListener(controller);
             mode1.setActionCommand(aMode.getActionCommand());
-            if(aMode.equals(Mode.SUMMIMAGE)){
+            if(aMode.equals(controller.getModel().getMode())){
                 mode1.setSelected(true);
             }
             modeGroup.add(mode1);
@@ -155,6 +155,15 @@ public class View extends JFrame implements Observer {
         fktBox.setSelectedIndex(1);
         fkt.add(fktBox);
 
+        // summation mode
+        JPanel sumAlgo = new JPanel(new GridLayout(1,2));
+        sumAlgo.add(new JLabel("lights summation algorithm"));
+        sumAlgoCombobox = new JComboBox<SumAlgo>(SumAlgo.values());
+        sumAlgoCombobox.setSelectedItem(controller.getModel().getSumAlgo());
+        sumAlgoCombobox.addActionListener(e -> controller.getModel().setSumAlgo((SumAlgo)((JComboBox) e.getSource()).getSelectedItem()));
+        sumAlgo.add(sumAlgoCombobox);
+
+        fkt.add(sumAlgo);
 
 
         fkt.add(new JLabel(""));
@@ -271,6 +280,7 @@ public class View extends JFrame implements Observer {
         progressBar.setMaximum(m.getMaxOperations());
         progressBar.setValue(m.getProgress());
         nachziehen.setVisible(m.getMode().equals(Mode.TRAILVIDEO));
+        sumAlgoCombobox.setEnabled(Mode.SUMMIMAGE.equals(m.getMode()));
     }
 
     public String getNachziehendeFrames() {
