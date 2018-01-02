@@ -1,5 +1,6 @@
 package oev.ioservices;
 
+import oev.ioservices.threads.Engine;
 import oev.ioservices.threads.EngineThread;
 import oev.model.ColorFunction;
 import oev.mvc.Model;
@@ -75,4 +76,9 @@ public class VideoSpecialProcessingServiceMultithreaded extends AbstractFramePro
         }
     }
 
+    @Override
+    protected void createEngine(ColorFunction function) {
+        // do not use the new multithreading in special mode, it has its own faster implementation
+        engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function,1);
+    }
 }

@@ -1,3 +1,9 @@
+## OEV 1.4.3 (2018-01-01)
+
+Performance improvement:
+- multithreading in every mode
+
+
 ## OEV 1.4.0 (2017-11-19)
 
 Features:

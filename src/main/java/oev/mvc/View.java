@@ -30,6 +30,7 @@ public class View extends JFrame implements Observer {
     JProgressBar progressBar;
     private JPanel nachziehen;
     private JComboBox sumAlgoCombobox;
+    private JCheckBox multithreadingCheckbox;
 
     public View(Controller c) {
         controller = c;
@@ -138,7 +139,7 @@ public class View extends JFrame implements Observer {
             JRadioButton mode1 = new JRadioButton(aMode.getDisplayName());
             mode1.addActionListener(controller);
             mode1.setActionCommand(aMode.getActionCommand());
-            if(aMode.equals(controller.getModel().getMode())){
+            if(aMode.equals(Mode.SUMMIMAGE)){
                 mode1.setSelected(true);
             }
             modeGroup.add(mode1);
@@ -176,6 +177,11 @@ public class View extends JFrame implements Observer {
         nachziehen.add(amountNachziehen);
         nachziehen.setVisible(false); // will get visible when trailvideo mode gets selected
         fkt.add(nachziehen);
+
+        multithreadingCheckbox = new JCheckBox("use multithreading ("+controller.getModel().getAmountThreads()+" cores detected)");
+        multithreadingCheckbox.setSelected(controller.getModel().isMultithreadingEnabled());
+        multithreadingCheckbox.addItemListener(e -> controller.getModel().setMultithreadingEnabled(((JCheckBox)e.getItem()).isSelected()));
+        fkt.add(multithreadingCheckbox);
 
         settings.add(fkt);
 
@@ -279,7 +285,8 @@ public class View extends JFrame implements Observer {
         lastAction3.setText(m.getLastAction3());
         progressBar.setMaximum(m.getMaxOperations());
         progressBar.setValue(m.getProgress());
-        nachziehen.setVisible(m.getMode().equals(Mode.TRAILVIDEO));
+        nachziehen.setVisible(Mode.TRAILVIDEO.equals(m.getMode()));
+        multithreadingCheckbox.setEnabled(!Mode.TRAILVIDEO.equals(m.getMode()));
         sumAlgoCombobox.setEnabled(Mode.SUMMIMAGE.equals(m.getMode()));
     }
 
