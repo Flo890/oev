@@ -15,7 +15,7 @@ public class BinningSumImageFrameProcessingService extends AbstractBinningFrameP
     public void loadAndProcessAllFrames() {
         model.increaseProgress();
 
-        BinnedImage binnedImage = new BinnedImage(jobMetaData.getWidth(), jobMetaData.getHeight());
+        BinnedImage binnedImage = new BinnedImage(jobMetaData.getWidth(), jobMetaData.getHeight(), ioService.getSourceFramesAmount());
 
         BufferedImage nextFrame = null;
         int frameCounter = 0;

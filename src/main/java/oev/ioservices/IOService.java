@@ -82,4 +82,8 @@ public class IOService {
     save(outputImage,fileName);
   }
 
+  public int getSourceFramesAmount(){
+    return sourceFiles.length;
+  }
+
 }
