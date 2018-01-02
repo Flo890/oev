@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class BinnedImage {
 
-    private final Map<PixelKey,BinnableColor> bins;
+    private final Map<PixelKey,ExtendedBinnableColor> bins;
     private final int width;
     private final int height;
     private int imageAmountInBins = 0;
@@ -18,15 +18,15 @@ public class BinnedImage {
         // create empty bins
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-                bins.put(new PixelKey(x,y), new BinnableColor());
+                bins.put(new PixelKey(x,y), new ExtendedBinnableColor());
             }
         }
     }
 
-    public void addBufferedImageToBins(BufferedImage image) {
+    public void addBufferedImageToBins(int frameIndex, BufferedImage image) {
         for (int x = 0; x<width; x++) {
             for (int y = 0; y<height; y++) {
-                bins.get(new PixelKey(x,y)).addColorRGB(image.getRGB(x,y));
+                bins.get(new PixelKey(x,y)).addColorRGB(frameIndex, image.getRGB(x,y));
             }
         }
         imageAmountInBins++;

@@ -62,7 +62,7 @@ public class VideoSpecialProcessingServiceMultithreaded extends AbstractFramePro
     }
 
     public void setModel(Model m) {
-        model = m;
+        super.setModel(m);
         thread1.setModel(model);
         thread2.setModel(model);
         thread3.setModel(model);

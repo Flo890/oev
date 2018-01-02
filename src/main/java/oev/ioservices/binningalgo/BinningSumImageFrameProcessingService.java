@@ -1,12 +1,9 @@
 package oev.ioservices.binningalgo;
 
-import oev.ioservices.FrameProcessingService;
 import oev.ioservices.binningalgo.model.BinnedImage;
 import oev.mvc.Model;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.image.BufferedImage;
 
 public class BinningSumImageFrameProcessingService extends AbstractBinningFrameProcessingService {
@@ -21,8 +18,10 @@ public class BinningSumImageFrameProcessingService extends AbstractBinningFrameP
         BinnedImage binnedImage = new BinnedImage(jobMetaData.getWidth(), jobMetaData.getHeight());
 
         BufferedImage nextFrame = null;
+        int frameCounter = 0;
         while((nextFrame = ioService.getNextFrame())!=null){
-            binnedImage.addBufferedImageToBins(nextFrame);
+            binnedImage.addBufferedImageToBins(frameCounter,nextFrame);
+            frameCounter++;
             model.increaseProgress();
         }
 
@@ -38,10 +37,7 @@ public class BinningSumImageFrameProcessingService extends AbstractBinningFrameP
         JSlider slider = new JSlider(1,imageAmountInBins,imageAmountInBins);
         int[] valueArray = {imageAmountInBins};
         slider.addChangeListener(e -> valueArray[0] = ((JSlider)e.getSource()).getValue());
-        String[] options = {"OK"};
-        JOptionPane.showMessageDialog(null, slider);//, "Adjust brightness",
-       //         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-           //     null, options, options[0]);
+        JOptionPane.showMessageDialog(null, slider);
         System.out.println("user inputed brightness "+valueArray[0]);
         return valueArray[0];
     }
