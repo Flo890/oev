@@ -2,6 +2,7 @@ package oev.mvc;
 
 import oev.ioservices.*;
 import oev.ioservices.binningalgo.BinningSumImageFrameProcessingService;
+import oev.ioservices.binningalgo.BinningVideoFrameProcessingService;
 import oev.model.ColorFunction;
 import oev.model.Mode;
 import oev.model.SumAlgo;
@@ -165,14 +166,7 @@ public class Model extends Observable {
         checkPaths();
         switch (mode) {
             case SUMMIMAGE:
-                if (SumAlgo.KEEP_BRIGHTEST.equals(sumAlgo)) {
-                    frameProcessingService = new SumImageProcessingService(this);
-                } else if (SumAlgo.SUM_RGB.equals(sumAlgo)) {
-                    frameProcessingService = new BinningSumImageFrameProcessingService(this);
-                } else {
-                    throw new IllegalArgumentException("unknown sumalgo "+sumAlgo);
-                }
-
+                frameProcessingService = new BinningSumImageFrameProcessingService(this, sumAlgo);
                 frameProcessingService.setOptionsAndPrepareExecution(
                         fkt,
                         sourceFiles,
@@ -180,7 +174,7 @@ public class Model extends Observable {
                 );
                 break;
             case SUMVIDEO:
-                frameProcessingService = new VideoProcessingService(this);
+                frameProcessingService = new BinningVideoFrameProcessingService(this, sumAlgo);
                 frameProcessingService.setOptionsAndPrepareExecution(
                         fkt,
                         sourceFiles,

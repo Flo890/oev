@@ -1,9 +1,11 @@
 package oev.ioservices;
 
+import oev.ioservices.binningalgo.properties.LazyProperty;
 import oev.model.ColorFunction;
 import oev.mvc.Model;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Created by Flo on 09/09/2016.
@@ -18,6 +20,8 @@ public interface FrameProcessingService {
 
   boolean cancel(boolean mayInterruptIfRunning);
 
-  void loadAndProcessAllFrames();
+  //void loadAndProcessAllFrames();
+
+  void loadAndProcessAllFrames(Map<LazyProperty,Object> lazyProperties);
 
 }

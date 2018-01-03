@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Deprecated
 public class VideoSpecialProcessingServiceMultithreaded extends AbstractFrameProcessingService implements FrameProcessingService {
 
     private int effectLengthInFrames;

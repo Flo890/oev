@@ -25,26 +25,12 @@ public class BinnedImage {
     }
 
     public void addBufferedImageToBins(int frameIndex, BufferedImage image) {
-        long starttime = new Date().getTime();
-
         for (int x = 0; x<width; x++) {
             for (int y = 0; y<height; y++) {
                 bins.get(getPixelHash(x,y)).addColorRGB(frameIndex, image.getRGB(x,y));
             }
         }
-
-        System.out.println("ms taken for frame "+frameIndex+": "+(new Date().getTime()-starttime));
         imageAmountInBins++;
-    }
-
-    public BufferedImage getImageNormalized(int normalizationDividend) {
-        BufferedImage image = new BufferedImage(width,height, BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x<width; x++) {
-            for (int y = 0; y < height; y++) {
-                image.setRGB(x,y,bins.get(getPixelHash(x,y)).getRgbNormalized(normalizationDividend));
-            }
-        }
-        return image;
     }
 
     public int getImageAmountInBins() {
@@ -57,5 +43,17 @@ public class BinnedImage {
         http://vojtechruzicka.com/bit-manipulation-java-bitwise-bit-shift-operations/
          */
         return (x << 14) + y;
+    }
+
+    public Map<Integer, BinnableColor> getBins() {
+        return bins;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

@@ -1,11 +1,15 @@
 package oev.ioservices;
 
+import oev.ioservices.binningalgo.properties.LazyProperty;
 import oev.ioservices.threads.Engine;
 import oev.model.ColorFunction;
+import oev.model.SumAlgo;
 import oev.mvc.Model;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractFrameProcessingService extends SwingWorker implements FrameProcessingService {
 
@@ -33,7 +37,7 @@ public abstract class AbstractFrameProcessingService extends SwingWorker impleme
 
   @Override
   protected Object doInBackground() throws Exception {
-    loadAndProcessAllFrames();
+   // loadAndProcessAllFrames();
     return null;
   }
 
@@ -41,4 +45,8 @@ public abstract class AbstractFrameProcessingService extends SwingWorker impleme
     engine = new Engine(jobMetaData.getWidth(), jobMetaData.getHeight(), function, model.isMultithreadingEnabled() ? model.getAmountThreads() : 1);
   }
 
+  @Override
+  public void loadAndProcessAllFrames(Map<LazyProperty, Object> lazyProperties) {
+
+  }
 }

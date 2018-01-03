@@ -1,22 +1,16 @@
 package oev.ioservices.binningalgo;
 
-import oev.colorprocessing.ColorComparisonFunction;
 import oev.ioservices.binningalgo.model.BinnedImage;
 import oev.ioservices.binningalgo.properties.LazyProperty;
-import oev.ioservices.binningalgo.renderer.BrightestColorBinnedImageRenderer;
-import oev.model.ColorFunction;
 import oev.model.SumAlgo;
 import oev.mvc.Model;
 
-import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
-public class BinningSumImageFrameProcessingService extends AbstractBinningFrameProcessingService {
-
-    public BinningSumImageFrameProcessingService(Model model, SumAlgo sumAlgo) {
+public class BinningVideoFrameProcessingService extends AbstractBinningFrameProcessingService {
+    public BinningVideoFrameProcessingService(Model model, SumAlgo sumAlgo) {
         super(model, sumAlgo);
     }
 
@@ -26,23 +20,27 @@ public class BinningSumImageFrameProcessingService extends AbstractBinningFrameP
 
         BinnedImage binnedImage = new BinnedImage(jobMetaData.getWidth(), jobMetaData.getHeight(), ioService.getSourceFramesAmount());
 
-        BufferedImage nextFrame = null;
+        // save the first frame unedited, and then use it as previous frame
+        BufferedImage firstFrame = ioService.getNextFrame();
         int frameCounter = 0;
+        binnedImage.addBufferedImageToBins(frameCounter,firstFrame);
+        frameCounter++;
+        ioService.save(firstFrame);
+        model.increaseProgress();
+
+        BufferedImage nextFrame = null;
+
         long times = 0;
         while((nextFrame = ioService.getNextFrame())!=null){
             Long starttime = new Date().getTime();
             binnedImage.addBufferedImageToBins(frameCounter,nextFrame);
+            ioService.save(binnedImageRenderer.renderImage(binnedImage, lazyProperties));
             frameCounter++;
             model.increaseProgress();
             times += new Date().getTime()-starttime;
         }
-        System.out.println("avg image time: "+times/frameCounter);
-
-        ioService.save(binnedImageRenderer.renderImage(binnedImage, lazyProperties), "resultImg.png");
+        System.out.println("avg image time: "+(times/(frameCounter-1)));
 
         model.showJobFinishedMessage();
-
     }
-
-
 }

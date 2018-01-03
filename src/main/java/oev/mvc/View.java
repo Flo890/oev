@@ -287,7 +287,7 @@ public class View extends JFrame implements Observer {
         progressBar.setValue(m.getProgress());
         nachziehen.setVisible(Mode.TRAILVIDEO.equals(m.getMode()));
         multithreadingCheckbox.setEnabled(!Mode.TRAILVIDEO.equals(m.getMode()));
-        sumAlgoCombobox.setEnabled(Mode.SUMMIMAGE.equals(m.getMode()));
+        sumAlgoCombobox.setEnabled(Mode.SUMMIMAGE.equals(m.getMode()) || Mode.SUMVIDEO.equals(m.getMode()));
     }
 
     public String getNachziehendeFrames() {

@@ -4,6 +4,7 @@ import oev.mvc.Model;
 
 import java.awt.image.BufferedImage;
 
+@Deprecated
 public class VideoProcessingService extends AbstractFrameProcessingService implements FrameProcessingService {
 
     private BufferedImage lastResultImage;
