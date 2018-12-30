@@ -32,9 +32,8 @@ The workflow can abbreviated as following:
 - (in Lighttrailing mode you have to choose a "light-trail length")
 - Hit start and wait. Afterwards you have the resulting images in the chosen output directory
 
-see my website for a more detailed description: http://www.tf-fotovideo.de/oev/
 Lightpainting Timelapse How-To Blog article:
-http://tf-fotovideo.de/blog/how-to-shoot-lightpainting-timelapse/
+https://medium.com/how-to-shoot-lightpainting-timelapse/how-to-shoot-lightpainting-timelapse-5dd2e88b4a09
 
 # Example Projects
 
@@ -44,5 +43,5 @@ https://www.youtube.com/watch?v=KR9BL6i_MgQ
 Munich Lightpainting Timelapse
 https://www.youtube.com/watch?v=bVFC_1oVLrM
 
-feel free to contact me! info@tf-fotovideo.de
+feel free to contact me! flo@sc-radsport.de
 
